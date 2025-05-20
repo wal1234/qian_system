@@ -88,4 +88,12 @@ public interface SysRoleMapper {
      * @return 角色信息
      */
     public SysRole checkRoleKeyUnique(String roleKey);
+
+    /**
+     * 根据用户名查询角色
+     * 
+     * @param userName 用户名
+     * @return 角色列表
+     */
+    public List<SysRole> selectRolesByUserName(String userName);
 } 

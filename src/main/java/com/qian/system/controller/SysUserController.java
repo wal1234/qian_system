@@ -55,7 +55,7 @@ public class SysUserController extends BaseController {
     @Log(title = "用户管理", businessType = BusinessType.INSERT)
     @PostMapping
     public Response<Void> add(@Validated @RequestBody SysUser user) {
-        if (!userService.checkUserNameUnique(user)) {
+        if (!userService.checkUserNameUnique(user.getUserName())) {
             return Response.error("新增用户'" + user.getUserName() + "'失败，登录账号已存在");
         } else if (!userService.checkPhoneUnique(user)) {
             return Response.error("新增用户'" + user.getUserName() + "'失败，手机号码已存在");
@@ -71,7 +71,7 @@ public class SysUserController extends BaseController {
     @Log(title = "用户管理", businessType = BusinessType.UPDATE)
     @PutMapping
     public Response<Void> edit(@Validated @RequestBody SysUser user) {
-        if (!userService.checkUserNameUnique(user)) {
+        if (!userService.checkUserNameUnique(user.getUserName())) {
             return Response.error("修改用户'" + user.getUserName() + "'失败，登录账号已存在");
         } else if (!userService.checkPhoneUnique(user)) {
             return Response.error("修改用户'" + user.getUserName() + "'失败，手机号码已存在");

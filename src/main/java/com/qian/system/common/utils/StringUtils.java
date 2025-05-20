@@ -314,4 +314,45 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
     public static <T> T cast(Object obj) {
         return (T) obj;
     }
+
+    /**
+     * 验证邮箱格式
+     * 
+     * @param email 邮箱地址
+     * @return 是否合法
+     */
+    public static boolean isValidEmail(String email) {
+        if (isEmpty(email)) {
+            return false;
+        }
+        String emailPattern = "^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\\.[a-zA-Z0-9_-]+)+$";
+        return email.matches(emailPattern);
+    }
+
+    /**
+     * 验证手机号格式
+     * 
+     * @param phone 手机号
+     * @return 是否合法
+     */
+    public static boolean isValidPhone(String phone) {
+        if (isEmpty(phone)) {
+            return false;
+        }
+        String phonePattern = "^1[3-9]\\d{9}$";
+        return phone.matches(phonePattern);
+    }
+
+    /**
+     * 判断是否是http(s)链接
+     * 
+     * @param link 链接
+     * @return 结果
+     */
+    public static boolean ishttp(String link) {
+        if (isEmpty(link)) {
+            return false;
+        }
+        return link.toLowerCase().startsWith("http://") || link.toLowerCase().startsWith("https://");
+    }
 } 

@@ -200,4 +200,12 @@ public interface ISysUserService {
      * @return 结果
      */
     public String importUser(List<SysUser> userList, Boolean isUpdateSupport, String operName);
+
+    /**
+     * 判断用户数组中是否包含超级管理员
+     *
+     * @param userIds 用户ID数组
+     * @return 结果
+     */
+    public boolean hasAdminUser(Long[] userIds);
 } 

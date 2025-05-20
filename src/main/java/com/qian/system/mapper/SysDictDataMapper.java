@@ -1,11 +1,13 @@
 package com.qian.system.mapper;
 
 import java.util.List;
+import org.apache.ibatis.annotations.Mapper;
 import com.qian.common.core.domain.entity.SysDictData;
 
 /**
  * 字典表 数据层
  */
+@Mapper
 public interface SysDictDataMapper {
     /**
      * 根据条件分页查询字典数据

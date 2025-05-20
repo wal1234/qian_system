@@ -47,7 +47,7 @@ public class UserServiceImpl implements IUserService {
      */
     @Override
     public boolean checkUserNameUnique(User user) {
-        User info = userMapper.selectUserByUsername(user.getUsername());
+        User info = userMapper.selectUserByUserName(user.getUsername());
         return info == null || info.getId().equals(user.getId());
     }
 
@@ -59,7 +59,7 @@ public class UserServiceImpl implements IUserService {
      */
     @Override
     public boolean checkPhoneUnique(User user) {
-        User info = userMapper.selectUserByPhone(user.getPhone());
+        User info = userMapper.selectUserByPhoneNumber(user.getPhone());
         return info == null || info.getId().equals(user.getId());
     }
 
@@ -71,7 +71,7 @@ public class UserServiceImpl implements IUserService {
      */
     @Override
     public boolean checkEmailUnique(User user) {
-        User info = userMapper.selectUserByEmail(user.getEmail());
+        User info = userMapper.selectUserByEmailAddress(user.getEmail());
         return info == null || info.getId().equals(user.getId());
     }
 
@@ -138,6 +138,6 @@ public class UserServiceImpl implements IUserService {
      */
     @Override
     public boolean hasAdminUser(Long[] ids) {
-        return userMapper.countAdminUsers(ids) > 0;
+        return userMapper.countAdminUserByIds(ids) > 0;
     }
 } 

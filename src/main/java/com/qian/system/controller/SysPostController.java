@@ -47,7 +47,7 @@ public class SysPostController extends BaseController {
     public Response<String> export(SysPost post) {
         List<SysPost> list = postService.selectPostList(post);
         ExcelUtil<SysPost> util = new ExcelUtil<SysPost>(SysPost.class);
-        return util.exportExcel(list, "岗位数据");
+        return Response.success(util.exportExcel(list, "岗位数据"));
     }
 
     @Operation(summary = "根据岗位编号获取详细信息")

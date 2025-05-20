@@ -132,4 +132,12 @@ public class SysDictTypeServiceImpl implements ISysDictTypeService {
         }
         return UserConstants.UNIQUE;
     }
+
+    /**
+     * 清空字典缓存
+     */
+    @Override
+    public void clearDictCache() {
+        // TODO: 实现清空字典缓存的逻辑
+    }
 } 

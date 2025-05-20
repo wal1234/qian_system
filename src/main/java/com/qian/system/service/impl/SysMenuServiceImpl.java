@@ -7,7 +7,6 @@ import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.qian.common.constants.UserConstants;
 import com.qian.system.domain.SysMenu;
 import com.qian.system.common.utils.StringUtils;
 import com.qian.system.mapper.SysMenuMapper;

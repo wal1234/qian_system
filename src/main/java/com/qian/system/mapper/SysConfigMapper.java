@@ -3,11 +3,19 @@ package com.qian.system.mapper;
 import com.qian.system.domain.SysConfig;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.ResultMap;
+import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
 
 /**
  * 参数配置 数据层
+ * 
+ * 对应XML文件: mapper/system/SysConfigMapper.xml
+ * SQL类型: MySQL
+ * 
+ * XML路径映射: classpath:mapper/system/SysConfigMapper.xml
+ * MyBatis配置: mybatis-config.xml和mybatis-mapping-config.xml
  */
 @Mapper
 public interface SysConfigMapper {
@@ -16,6 +24,7 @@ public interface SysConfigMapper {
      *
      * @param config 参数配置信息
      * @return 参数配置集合
+     * @see mapper/system/SysConfigMapper.xml#selectConfigList
      */
     List<SysConfig> selectConfigList(SysConfig config);
 
@@ -24,7 +33,10 @@ public interface SysConfigMapper {
      *
      * @param configId 参数配置ID
      * @return 参数配置信息
+     * @see mapper/system/SysConfigMapper.xml#selectConfigById
      */
+    @ResultMap("SysConfigResult")
+    @Select("select config_id, config_name, config_key, config_value, config_type, create_by, create_time, update_by, update_time, remark from sys_config where config_id = #{configId}")
     SysConfig selectConfigById(Long configId);
 
     /**
@@ -32,6 +44,7 @@ public interface SysConfigMapper {
      *
      * @param configKey 参数键名
      * @return 参数配置信息
+     * @see mapper/system/SysConfigMapper.xml#selectConfigByKey
      */
     SysConfig selectConfigByKey(String configKey);
 

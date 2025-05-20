@@ -125,4 +125,11 @@ public interface ISysRoleService {
      * @return 选中角色ID列表
      */
     public List<Long> selectRoleListByUserId(Long userId);
+
+    /**
+     * 查询所有角色
+     * 
+     * @return 角色列表
+     */
+    public List<SysRole> selectRoleAll();
 } 

@@ -66,4 +66,19 @@ public class SysRole extends BaseEntity {
     /** 角色菜单权限 */
     @Schema(description = "角色菜单权限")
     private Set<String> permissions;
+
+    public SysRole() {
+    }
+
+    public SysRole(Long roleId) {
+        this.roleId = roleId;
+    }
+
+    public boolean isAdmin() {
+        return isAdmin(this.roleId);
+    }
+
+    public static boolean isAdmin(Long roleId) {
+        return roleId != null && 1L == roleId;
+    }
 } 

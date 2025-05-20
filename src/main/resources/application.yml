@@ -1,61 +1,14 @@
 spring:
   application:
     name: qian-system
+  main:
+    allow-bean-definition-overriding: true
   profiles:
     active: ${ENV:dev}
   # Spring Cloud 2021需要添加这一行
   config:
     import: optional:nacos:${spring.application.name}-${spring.profiles.active}.${spring.cloud.nacos.config.file-extension}
-  # Redis配置
-  redis:
-    host: ${REDIS_HOST:101.34.70.221}
-    port: ${REDIS_PORT:6379}
-    password: ${REDIS_PASSWORD:kzt10202612}
-    database: ${REDIS_DATABASE:0}
-    timeout: ${REDIS_TIMEOUT:10000}
-    lettuce:
-      pool:
-        max-active: ${REDIS_MAX_ACTIVE:8}
-        max-wait: ${REDIS_MAX_WAIT:-1}
-        max-idle: ${REDIS_MAX_IDLE:8}
-        min-idle: ${REDIS_MIN_IDLE:0}
-    # 开启事务支持
-    enable-transaction-support: true
-    # 开启键空间通知
-    keyspace-events: Ex
-  cloud:
-    nacos:
-      discovery:
-        server-addr: ${NACOS_SERVER_ADDR:101.34.70.221:8848}
-        namespace: ${NACOS_NAMESPACE:qian_blog}
-        username: ${NACOS_USERNAME:qian_blog}
-        password: ${NACOS_PASSWORD:kzt10202612}
-        # Connection settings to handle startup issues
-        fail-fast: false
-        watch-delay: 30000
-        watch-enabled: true
-      config:
-        server-addr: ${NACOS_SERVER_ADDR:101.34.70.221:8848}
-        namespace: ${NACOS_NAMESPACE:qian_blog}
-        file-extension: yml
-        username: ${NACOS_USERNAME:qian_blog}
-        password: ${NACOS_PASSWORD:kzt10202612}
-        timeout: 15000
-        max-retry: 5
-        retry-interval: 3000
-        # 指定需要加载的其他配置文件
-        shared-configs:
-          - data-id: application
-            refresh: true
-          - data-id: qian_system
-            refresh: true
-    # 禁用Eureka自动配置
-    eureka:
-      client:
-        enabled: false
-      instance:
-        enabled: false
-  # 数据源配置优化
+  # 数据源配置
   datasource:
     type: com.alibaba.druid.pool.DruidDataSource
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -63,6 +16,7 @@ spring:
     username: ${MYSQL_USERNAME:qian_sys_user}
     password: ${MYSQL_PASSWORD:Sys@10202612}
     druid:
+      # 连接池配置
       initial-size: ${DRUID_INITIAL_SIZE:5}
       min-idle: ${DRUID_MIN_IDLE:10}
       max-active: ${DRUID_MAX_ACTIVE:20}
@@ -101,6 +55,73 @@ spring:
         wall:
           config:
             multi-statement-allow: true
+  # Redis配置
+  redis:
+    host: ${REDIS_HOST:101.34.70.221}
+    port: ${REDIS_PORT:6379}
+    password: ${REDIS_PASSWORD:kzt10202612}
+    database: ${REDIS_DATABASE:0}
+    timeout: ${REDIS_TIMEOUT:10000}
+    lettuce:
+      pool:
+        max-active: ${REDIS_MAX_ACTIVE:8}
+        max-wait: ${REDIS_MAX_WAIT:-1}
+        max-idle: ${REDIS_MAX_IDLE:8}
+        min-idle: ${REDIS_MIN_IDLE:0}
+    # 开启事务支持
+    enable-transaction-support: true
+    # 开启键空间通知
+    keyspace-events: Ex
+  cloud:
+    nacos:
+      discovery:
+        server-addr: ${NACOS_SERVER_ADDR:101.34.70.221:8848}
+        namespace: ${NACOS_NAMESPACE:qian_blog}
+        username: ${NACOS_USERNAME:qian_blog}
+        password: ${NACOS_PASSWORD:kzt10202612}
+        # 连接设置
+        fail-fast: false
+        watch-delay: 30000
+        watch-enabled: true
+      config:
+        server-addr: ${NACOS_SERVER_ADDR:101.34.70.221:8848}
+        namespace: ${NACOS_NAMESPACE:qian_blog}
+        file-extension: yml
+        username: ${NACOS_USERNAME:qian_blog}
+        password: ${NACOS_PASSWORD:kzt10202612}
+        timeout: 15000
+        max-retry: 5
+        retry-interval: 3000
+        # 指定需要加载的其他配置文件
+        shared-configs:
+          - data-id: application
+            refresh: true
+          - data-id: qian_system
+            refresh: true
+    # 禁用Eureka自动配置
+    eureka:
+      client:
+        enabled: false
+      instance:
+        enabled: false
+
+# Feign配置
+feign:
+  circuitbreaker:
+    enabled: true
+  client:
+    config:
+      default:
+        connectTimeout: 5000
+        readTimeout: 5000
+        loggerLevel: FULL
+  compression:
+    request:
+      enabled: true
+      mime-types: text/xml,application/xml,application/json
+      min-request-size: 2048
+    response:
+      enabled: true
 
 # 服务器配置
 server:
@@ -120,23 +141,17 @@ server:
     max-http-form-post-size: 20MB
     uri-encoding: UTF-8
 
-# MyBatis配置优化
+# MyBatis配置
 mybatis:
+  # 类型别名包配置 - 保持唯一配置，不要在mybatis-config.xml中重复配置
   typeAliasesPackage: com.qian.system.domain
+  # Mapper文件位置
   mapperLocations: classpath:mapper/**/*.xml
-  #configLocation: classpath:mybatis/mybatis-config.xml
-  configuration:
-    map-underscore-to-camel-case: true
-    default-fetch-size: 100
-    default-statement-timeout: 30
-    cache-enabled: true
-    call-setters-on-nulls: true
-    jdbc-type-for-null: NULL
-    local-cache-scope: SESSION
-    lazy-loading-enabled: true
-    aggressive-lazy-loading: false
-    use-generated-keys: true
-    log-impl: org.apache.ibatis.logging.slf4j.Slf4jImpl
+  # MyBatis配置文件位置 - 此文件中不要再配置typeAliases节点
+  configLocation: classpath:mybatis/mybatis-config.xml
+  # 是否启用自定义Mapper扫描器 - 默认禁用，避免与@MapperScan冲突
+  # 特别注意：所有Mapper接口都需要添加@Mapper注解，确保能正确被扫描到
+  use-custom-scanner: false
 
 # Commons 配置
 commons:
@@ -152,13 +167,20 @@ thread-pool:
   queue-capacity: ${QUEUE_CAPACITY:200}
   keep-alive-seconds: ${KEEP_ALIVE_SECONDS:60}
   thread-name-prefix: qian-async-
+  # 拒绝策略：ABORT, CALLER_RUNS, DISCARD, DISCARD_OLDEST
+  rejection-policy: CALLER_RUNS
+  # 应用关闭等待时间（秒）
+  shutdown-timeout: 15
 
 # 日志配置
 logging:
   level:
-    com.alibaba.nacos: debug
+    root: ${LOG_LEVEL_ROOT:INFO}
+    com.alibaba.nacos: ${LOG_LEVEL_NACOS:WARN}
+    com.qian.system.feign: ${LOG_LEVEL_FEIGN:DEBUG}
+    com.qian.system.mapper: ${LOG_LEVEL_MAPPER:DEBUG}
   file:
-    name: d:\logs\qian-system\qian-system.log
+    name: ${LOG_PATH:./logs}/qian-system/qian-system.log
   logback:
     rollingpolicy:
       max-file-size: 100MB

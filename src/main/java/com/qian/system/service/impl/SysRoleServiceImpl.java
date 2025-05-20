@@ -5,17 +5,18 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import com.qian.common.constants.UserConstants;
 import com.qian.system.common.exception.ServiceException;
 import com.qian.system.common.utils.StringUtils;
 import com.qian.system.domain.SysRole;
 import com.qian.system.domain.SysRoleDept;
 import com.qian.system.domain.SysRoleMenu;
+import com.qian.system.domain.LoginUser;
 import com.qian.system.mapper.SysRoleMapper;
 import com.qian.system.mapper.SysRoleDeptMapper;
 import com.qian.system.mapper.SysRoleMenuMapper;
 import com.qian.system.mapper.SysUserRoleMapper;
 import com.qian.system.service.ISysRoleService;
+import com.qian.system.service.TokenService;
 
 /**
  * 角色 业务层处理
@@ -33,6 +34,9 @@ public class SysRoleServiceImpl implements ISysRoleService {
 
     @Autowired
     private SysUserRoleMapper userRoleMapper;
+
+    @Autowired
+    private TokenService tokenService;
 
     /**
      * 根据条件分页查询角色数据
@@ -142,7 +146,7 @@ public class SysRoleServiceImpl implements ISysRoleService {
             SysRole role = new SysRole();
             role.setRoleId(roleId);
             List<SysRole> roles = selectRoleList(role);
-            if (StringUtils.isEmpty(roles)) {
+            if (roles == null || roles.isEmpty()) {
                 throw new ServiceException("没有权限访问角色数据！");
             }
         }
@@ -249,7 +253,7 @@ public class SysRoleServiceImpl implements ISysRoleService {
      */
     @Override
     public int updateRoleStatus(SysRole role) {
-        return roleMapper.updateRoleStatus(role);
+        return roleMapper.updateRole(role);
     }
 
     /**
@@ -328,7 +332,7 @@ public class SysRoleServiceImpl implements ISysRoleService {
      * 判断是否是管理员
      */
     private boolean isAdmin() {
-        // 这里需要根据实际情况实现判断当前用户是否是管理员的逻辑
-        return true;
+        LoginUser loginUser = tokenService.getLoginUser();
+        return loginUser != null && loginUser.getUser() != null && loginUser.getUser().isAdmin();
     }
 } 

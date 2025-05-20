@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <springProperty scope="context" name="LOG_PATH" source="logging.file.path"/>
+    <springProperty scope="context" name="APP_NAME" source="spring.application.name"/>
+    <springProperty scope="context" name="PROFILE" source="spring.profiles.active"/>
+    
+    <!-- 控制台输出 -->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+    
+    <!-- 系统日志 -->
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_PATH:./logs}/${APP_NAME:-qian-system}/${APP_NAME:-qian-system}.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_PATH:./logs}/${APP_NAME:-qian-system}/${APP_NAME:-qian-system}.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <maxFileSize>100MB</maxFileSize>
+            <maxHistory>30</maxHistory>
+            <totalSizeCap>3GB</totalSizeCap>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+    
+    <!-- 异步输出系统日志，提高性能 -->
+    <appender name="ASYNC_FILE" class="ch.qos.logback.classic.AsyncAppender">
+        <discardingThreshold>0</discardingThreshold>
+        <queueSize>1024</queueSize>
+        <includeCallerData>true</includeCallerData>
+        <appender-ref ref="FILE"/>
+    </appender>
+    
+    <!-- 错误日志，单独输出到错误日志文件 -->
+    <appender name="ERROR_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_PATH:./logs}/${APP_NAME:-qian-system}/${APP_NAME:-qian-system}_error.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_PATH:./logs}/${APP_NAME:-qian-system}/${APP_NAME:-qian-system}_error.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <maxFileSize>100MB</maxFileSize>
+            <maxHistory>30</maxHistory>
+            <totalSizeCap>2GB</totalSizeCap>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>ERROR</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+    </appender>
+    
+    <!-- SQL日志，记录所有SQL语句 -->
+    <appender name="SQL_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_PATH:./logs}/${APP_NAME:-qian-system}/${APP_NAME:-qian-system}_sql.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_PATH:./logs}/${APP_NAME:-qian-system}/${APP_NAME:-qian-system}_sql.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <maxFileSize>100MB</maxFileSize>
+            <maxHistory>7</maxHistory>
+            <totalSizeCap>1GB</totalSizeCap>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} - %msg%n</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+    
+    <!-- 多环境配置 -->
+    <springProfile name="dev">
+        <root level="INFO">
+            <appender-ref ref="CONSOLE"/>
+            <appender-ref ref="ASYNC_FILE"/>
+            <appender-ref ref="ERROR_FILE"/>
+        </root>
+        
+        <!-- 开发环境下打印更多SQL日志 -->
+        <logger name="com.qian.system.mapper" level="DEBUG"/>
+        <logger name="com.qian.system.common.interceptor.SqlCostInterceptor" level="DEBUG">
+            <appender-ref ref="SQL_FILE"/>
+        </logger>
+        
+        <logger name="org.springframework" level="INFO"/>
+        <logger name="com.alibaba.nacos" level="WARN"/>
+        <logger name="org.apache.http" level="WARN"/>
+        <logger name="org.mybatis.spring" level="INFO"/>
+        <logger name="org.hibernate.validator" level="WARN"/>
+    </springProfile>
+    
+    <springProfile name="test">
+        <root level="INFO">
+            <appender-ref ref="CONSOLE"/>
+            <appender-ref ref="ASYNC_FILE"/>
+            <appender-ref ref="ERROR_FILE"/>
+        </root>
+        
+        <logger name="com.qian.system.mapper" level="DEBUG"/>
+        <logger name="com.qian.system.common.interceptor.SqlCostInterceptor" level="DEBUG">
+            <appender-ref ref="SQL_FILE"/>
+        </logger>
+    </springProfile>
+    
+    <springProfile name="prod">
+        <root level="INFO">
+            <appender-ref ref="ASYNC_FILE"/>
+            <appender-ref ref="ERROR_FILE"/>
+        </root>
+        
+        <!-- 生产环境只记录慢SQL -->
+        <logger name="com.qian.system.common.interceptor.SqlCostInterceptor" level="WARN">
+            <appender-ref ref="SQL_FILE"/>
+        </logger>
+        
+        <!-- 减少各类依赖库的日志量 -->
+        <logger name="org.springframework" level="WARN"/>
+        <logger name="com.alibaba.nacos" level="ERROR"/>
+        <logger name="org.apache.http" level="ERROR"/>
+        <logger name="org.mybatis.spring" level="WARN"/>
+        <logger name="org.hibernate.validator" level="ERROR"/>
+        <logger name="com.alibaba.druid" level="WARN"/>
+    </springProfile>
+</configuration> 

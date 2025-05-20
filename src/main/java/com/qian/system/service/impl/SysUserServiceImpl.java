@@ -1,14 +1,23 @@
 package com.qian.system.service.impl;
 
 import java.util.List;
+import java.util.ArrayList;
+import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.qian.common.constants.UserConstants;
 import com.qian.system.domain.entity.SysUser;
+import com.qian.system.domain.SysRole;
+import com.qian.system.domain.entity.SysPost;
+import com.qian.system.domain.SysUserRole;
 import com.qian.system.common.exception.ServiceException;
 import com.qian.system.common.utils.StringUtils;
+import com.qian.system.common.utils.SecurityUtils;
 import com.qian.system.mapper.SysUserMapper;
+import com.qian.system.mapper.SysRoleMapper;
+import com.qian.system.mapper.SysPostMapper;
+import com.qian.system.mapper.SysUserRoleMapper;
 import com.qian.system.service.ISysUserService;
 
 /**
@@ -18,6 +27,22 @@ import com.qian.system.service.ISysUserService;
 public class SysUserServiceImpl implements ISysUserService {
     @Autowired
     private SysUserMapper userMapper;
+
+    @Autowired
+    private SysRoleMapper roleMapper;
+
+    @Autowired
+    private SysPostMapper postMapper;
+
+    @Autowired
+    private SysUserRoleMapper userRoleMapper;
+
+    /**
+     * 判断是否是管理员
+     */
+    private boolean isAdmin() {
+        return false; // TODO: 实现判断是否是管理员的逻辑
+    }
 
     /**
      * 根据条件分页查询用户列表
@@ -55,12 +80,12 @@ public class SysUserServiceImpl implements ISysUserService {
     /**
      * 校验用户名称是否唯一
      * 
-     * @param user 用户信息
+     * @param userName 用户名称
      * @return 结果
      */
     @Override
-    public boolean checkUserNameUnique(SysUser user) {
-        int count = userMapper.checkUserNameUnique(user.getUserName());
+    public boolean checkUserNameUnique(String userName) {
+        int count = userMapper.checkUserNameUnique(userName);
         return count == 0;
     }
 
@@ -148,6 +173,21 @@ public class SysUserServiceImpl implements ISysUserService {
     /**
      * 重置用户密码
      * 
+     * @param userName 用户名
+     * @param password 密码
+     * @return 结果
+     */
+    @Override
+    public int resetUserPwd(String userName, String password) {
+        SysUser user = new SysUser();
+        user.setUserName(userName);
+        user.setPassword(password);
+        return userMapper.updateUser(user);
+    }
+
+    /**
+     * 重置用户密码
+     * 
      * @param user 用户信息
      * @return 结果
      */
@@ -181,5 +221,234 @@ public class SysUserServiceImpl implements ISysUserService {
             checkUserAllowed(new SysUser(userId));
         }
         return userMapper.deleteUserByIds(userIds);
+    }
+
+    /**
+     * 判断用户数组中是否包含超级管理员
+     *
+     * @param userIds 用户ID数组
+     * @return 结果
+     */
+    @Override
+    public boolean hasAdminUser(Long[] userIds) {
+        for (Long userId : userIds) {
+            SysUser user = selectUserById(userId);
+            if (user != null && user.isAdmin()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 校验用户是否有数据权限
+     * 
+     * @param userId 用户id
+     */
+    @Override
+    public void checkUserDataScope(Long userId) {
+        if (!isAdmin()) {
+            SysUser user = new SysUser();
+            user.setUserId(userId);
+            List<SysUser> users = selectUserList(user);
+            if (users == null || users.isEmpty()) {
+                throw new ServiceException("没有权限访问用户数据！");
+            }
+        }
+    }
+
+    /**
+     * 修改用户基本信息
+     * 
+     * @param user 用户信息
+     * @return 结果
+     */
+    @Override
+    public int updateUserProfile(SysUser user) {
+        return userMapper.updateUser(user);
+    }
+
+    /**
+     * 修改用户头像
+     * 
+     * @param userName 用户名
+     * @param avatar 头像地址
+     * @return 结果
+     */
+    @Override
+    public boolean updateUserAvatar(String userName, String avatar) {
+        return userMapper.updateUserAvatar(userName, avatar) > 0;
+    }
+
+    /**
+     * 用户授权角色
+     * 
+     * @param userId 用户ID
+     * @param roleIds 角色组
+     */
+    @Override
+    public void insertUserAuth(Long userId, Long[] roleIds) {
+        if (StringUtils.isNotEmpty(roleIds)) {
+            // 新增用户与角色管理
+            List<SysUserRole> list = new ArrayList<SysUserRole>();
+            for (Long roleId : roleIds) {
+                SysUserRole ur = new SysUserRole();
+                ur.setUserId(userId);
+                ur.setRoleId(roleId);
+                list.add(ur);
+            }
+            if (list.size() > 0) {
+                userRoleMapper.batchUserRole(list);
+            }
+        }
+    }
+
+    /**
+     * 注册用户信息
+     * 
+     * @param user 用户信息
+     * @return 结果
+     */
+    @Override
+    public boolean registerUser(SysUser user) {
+        return userMapper.insertUser(user) > 0;
+    }
+
+    /**
+     * 根据条件分页查询已分配用户角色列表
+     * 
+     * @param user 用户信息
+     * @return 用户信息集合信息
+     */
+    @Override
+    public List<SysUser> selectAllocatedList(SysUser user) {
+        return userMapper.selectAllocatedList(user);
+    }
+
+    /**
+     * 根据条件分页查询未分配用户角色列表
+     * 
+     * @param user 用户信息
+     * @return 用户信息集合信息
+     */
+    @Override
+    public List<SysUser> selectUnallocatedList(SysUser user) {
+        return userMapper.selectUnallocatedList(user);
+    }
+
+    /**
+     * 根据用户ID查询用户所属角色组
+     * 
+     * @param userName 用户名
+     * @return 结果
+     */
+    @Override
+    public String selectUserRoleGroup(String userName) {
+        List<SysRole> list = roleMapper.selectRolesByUserName(userName);
+        if (list == null || list.isEmpty()) {
+            return StringUtils.EMPTY;
+        }
+        return list.stream().map(SysRole::getRoleName).collect(Collectors.joining(","));
+    }
+
+    /**
+     * 根据用户ID查询用户所属岗位组
+     * 
+     * @param userName 用户名
+     * @return 结果
+     */
+    @Override
+    public String selectUserPostGroup(String userName) {
+        List<SysPost> list = postMapper.selectPostsByUserName(userName);
+        if (list == null || list.isEmpty()) {
+            return StringUtils.EMPTY;
+        }
+        return list.stream().map(SysPost::getPostName).collect(Collectors.joining(","));
+    }
+
+    /**
+     * 导入用户数据
+     * 
+     * @param userList 用户数据列表
+     * @param isUpdateSupport 是否支持更新，如果已存在，则进行更新数据
+     * @param operName 操作用户
+     * @return 结果
+     */
+    @Override
+    public String importUser(List<SysUser> userList, Boolean isUpdateSupport, String operName) {
+        if (userList == null || userList.isEmpty()) {
+            throw new ServiceException("导入用户数据不能为空！");
+        }
+        int successNum = 0;
+        int failureNum = 0;
+        StringBuilder successMsg = new StringBuilder();
+        StringBuilder failureMsg = new StringBuilder();
+        for (SysUser user : userList) {
+            try {
+                // 数据校验
+                validateUserData(user);
+                
+                // 验证是否存在这个用户
+                SysUser u = userMapper.selectUserByUserName(user.getUserName());
+                if (StringUtils.isNull(u)) {
+                    // 设置默认密码
+                    if (StringUtils.isEmpty(user.getPassword())) {
+                        user.setPassword("123456");
+                    }
+                    // 加密密码
+                    user.setPassword(SecurityUtils.encryptPassword(user.getPassword()));
+                    user.setCreateBy(operName);
+                    this.insertUser(user);
+                    successNum++;
+                    successMsg.append("<br/>" + successNum + "、账号 " + user.getUserName() + " 导入成功");
+                } else if (isUpdateSupport) {
+                    // 如果提供了新密码，需要加密
+                    if (StringUtils.isNotEmpty(user.getPassword())) {
+                        user.setPassword(SecurityUtils.encryptPassword(user.getPassword()));
+                    } else {
+                        // 不更新密码
+                        user.setPassword(null);
+                    }
+                    user.setUpdateBy(operName);
+                    this.updateUser(user);
+                    successNum++;
+                    successMsg.append("<br/>" + successNum + "、账号 " + user.getUserName() + " 更新成功");
+                } else {
+                    failureNum++;
+                    failureMsg.append("<br/>" + failureNum + "、账号 " + user.getUserName() + " 已存在");
+                }
+            } catch (Exception e) {
+                failureNum++;
+                String msg = "<br/>" + failureNum + "、账号 " + user.getUserName() + " 导入失败：";
+                failureMsg.append(msg + e.getMessage());
+            }
+        }
+        if (failureNum > 0) {
+            failureMsg.insert(0, "很抱歉，导入失败！共 " + failureNum + " 条数据格式不正确，错误如下：");
+            throw new ServiceException(failureMsg.toString());
+        } else {
+            successMsg.insert(0, "恭喜您，数据已全部导入成功！共 " + successNum + " 条，数据如下：");
+        }
+        return successMsg.toString();
+    }
+
+    /**
+     * 验证用户数据
+     * 
+     * @param user 用户数据
+     */
+    private void validateUserData(SysUser user) {
+        if (StringUtils.isEmpty(user.getUserName())) {
+            throw new ServiceException("用户账号不能为空");
+        }
+        if (user.getUserName().length() > 30) {
+            throw new ServiceException("用户账号长度不能超过30个字符");
+        }
+        if (StringUtils.isNotEmpty(user.getEmail()) && !StringUtils.isValidEmail(user.getEmail())) {
+            throw new ServiceException("邮箱格式不正确");
+        }
+        if (StringUtils.isNotEmpty(user.getPhonenumber()) && !StringUtils.isValidPhone(user.getPhonenumber())) {
+            throw new ServiceException("手机号码格式不正确");
+        }
     }
 } 

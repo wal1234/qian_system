@@ -1,6 +1,8 @@
 package com.qian.system.controller;
 
 import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
@@ -9,7 +11,7 @@ import com.qian.common.annotation.Log;
 import com.qian.common.constants.UserConstants;
 import com.qian.system.common.core.controller.BaseController;
 import com.qian.common.response.Response;
-import com.qian.common.core.domain.entity.SysMenu;
+import com.qian.system.domain.SysMenu;
 import com.qian.common.enums.system.BusinessType;
 import com.qian.system.common.utils.StringUtils;
 import com.qian.system.service.ISysMenuService;
@@ -53,9 +55,10 @@ public class SysMenuController extends BaseController {
     @GetMapping(value = "/roleMenuTreeselect/{roleId}")
     public Response<Object> roleMenuTreeselect(@Parameter(description = "角色ID") @PathVariable("roleId") Long roleId) {
         List<SysMenu> menus = menuService.selectMenuList(getUserId());
-        return Response.success()
-            .put("checkedKeys", menuService.selectMenuListByRoleId(roleId))
-            .put("menus", menuService.buildMenuTreeSelect(menus));
+        Map<String, Object> result = new HashMap<>();
+        result.put("checkedKeys", menuService.selectMenuListByRoleId(roleId));
+        result.put("menus", menuService.buildMenuTreeSelect(menus));
+        return Response.success(result);
     }
 
     @Operation(summary = "新增菜单")
@@ -94,10 +97,10 @@ public class SysMenuController extends BaseController {
     @DeleteMapping("/{menuId}")
     public Response<Void> remove(@Parameter(description = "菜单ID") @PathVariable("menuId") Long menuId) {
         if (menuService.hasChildByMenuId(menuId)) {
-            return Response.warn("存在子菜单,不允许删除");
+            return Response.error("存在子菜单,不允许删除");
         }
         if (menuService.checkMenuExistRole(menuId)) {
-            return Response.warn("菜单已分配,不允许删除");
+            return Response.error("菜单已分配,不允许删除");
         }
         return toResponse(menuService.deleteMenuById(menuId));
     }

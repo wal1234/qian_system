@@ -2,11 +2,13 @@ package com.qian.system.mapper;
 
 import java.util.List;
 import org.apache.ibatis.annotations.Param;
-import com.qian.common.core.domain.entity.SysMenu;
+import org.apache.ibatis.annotations.Mapper;
+import com.qian.system.domain.SysMenu;
 
 /**
  * 菜单表 数据层
  */
+@Mapper
 public interface SysMenuMapper {
     /**
      * 查询系统菜单列表
