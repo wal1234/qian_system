@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<suppressions xmlns="https://jeremylong.github.io/DependencyCheck/dependency-suppression.1.3.xsd">
+    <!-- 示例：如果有特定的误报需要抑制 -->
+    <!--
+    <suppress>
+        <notes>特定版本的误报说明</notes>
+        <gav>group:artifact:version</gav>
+        <cve>CVE-XXXX-XXXXX</cve>
+    </suppress>
+    -->
+    
+    <!-- 示例：对于无法修复但实际上不会被利用的漏洞 -->
+    <!--
+    <suppress>
+        <notes>该依赖的漏洞在我们的使用场景下无法被利用，因为...</notes>
+        <packageUrl regex="true">^pkg:maven/com\.example/example@.*$</packageUrl>
+        <vulnerabilityName>特定漏洞名称</vulnerabilityName>
+    </suppress>
+    -->
+</suppressions> 

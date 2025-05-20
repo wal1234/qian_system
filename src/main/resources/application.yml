@@ -1,0 +1,182 @@
+spring:
+  application:
+    name: qian-system
+  profiles:
+    active: ${ENV:dev}
+  # Spring Cloud 2021需要添加这一行
+  config:
+    import: optional:nacos:${spring.application.name}-${spring.profiles.active}.${spring.cloud.nacos.config.file-extension}
+  # Redis配置
+  redis:
+    host: ${REDIS_HOST:101.34.70.221}
+    port: ${REDIS_PORT:6379}
+    password: ${REDIS_PASSWORD:kzt10202612}
+    database: ${REDIS_DATABASE:0}
+    timeout: ${REDIS_TIMEOUT:10000}
+    lettuce:
+      pool:
+        max-active: ${REDIS_MAX_ACTIVE:8}
+        max-wait: ${REDIS_MAX_WAIT:-1}
+        max-idle: ${REDIS_MAX_IDLE:8}
+        min-idle: ${REDIS_MIN_IDLE:0}
+    # 开启事务支持
+    enable-transaction-support: true
+    # 开启键空间通知
+    keyspace-events: Ex
+  cloud:
+    nacos:
+      discovery:
+        server-addr: ${NACOS_SERVER_ADDR:101.34.70.221:8848}
+        namespace: ${NACOS_NAMESPACE:qian_blog}
+        username: ${NACOS_USERNAME:qian_blog}
+        password: ${NACOS_PASSWORD:kzt10202612}
+        # Connection settings to handle startup issues
+        fail-fast: false
+        watch-delay: 30000
+        watch-enabled: true
+      config:
+        server-addr: ${NACOS_SERVER_ADDR:101.34.70.221:8848}
+        namespace: ${NACOS_NAMESPACE:qian_blog}
+        file-extension: yml
+        username: ${NACOS_USERNAME:qian_blog}
+        password: ${NACOS_PASSWORD:kzt10202612}
+        timeout: 15000
+        max-retry: 5
+        retry-interval: 3000
+        # 指定需要加载的其他配置文件
+        shared-configs:
+          - data-id: application
+            refresh: true
+          - data-id: qian_system
+            refresh: true
+    # 禁用Eureka自动配置
+    eureka:
+      client:
+        enabled: false
+      instance:
+        enabled: false
+  # 数据源配置优化
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://${MYSQL_HOST:101.34.70.221}:${MYSQL_PORT:3306}/${MYSQL_DATABASE:qian_sys}?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=false&serverTimezone=GMT%2B8&rewriteBatchedStatements=true&allowPublicKeyRetrieval=true
+    username: ${MYSQL_USERNAME:qian_sys_user}
+    password: ${MYSQL_PASSWORD:Sys@10202612}
+    druid:
+      initial-size: ${DRUID_INITIAL_SIZE:5}
+      min-idle: ${DRUID_MIN_IDLE:10}
+      max-active: ${DRUID_MAX_ACTIVE:20}
+      max-wait: ${DRUID_MAX_WAIT:60000}
+      # 检测配置
+      time-between-eviction-runs-millis: ${DRUID_TIME_BETWEEN_EVICTION:60000}
+      min-evictable-idle-time-millis: ${DRUID_MIN_EVICTABLE:300000}
+      max-evictable-idle-time-millis: ${DRUID_MAX_EVICTABLE:900000}
+      validation-query: SELECT 1 FROM DUAL
+      test-while-idle: true
+      test-on-borrow: false
+      test-on-return: false
+      # 监控配置
+      filters: stat,wall,slf4j
+      web-stat-filter:
+        enabled: true
+        url-pattern: /*
+        exclusions: "*.js,*.gif,*.jpg,*.png,*.css,*.ico,/druid/*"
+        session-stat-enable: true
+      stat-view-servlet:
+        enabled: true
+        url-pattern: /druid/*
+        login-username: ${DRUID_USERNAME:admin}
+        login-password: ${DRUID_PASSWORD:123456}
+        reset-enable: false
+        allow: ${DRUID_ALLOW_IPS:127.0.0.1}
+      # 性能优化
+      keep-alive: true
+      phy-timeout-millis: 30000
+      # 慢SQL记录
+      filter:
+        stat:
+          log-slow-sql: true
+          slow-sql-millis: 1000
+          merge-sql: true
+        wall:
+          config:
+            multi-statement-allow: true
+
+# 服务器配置
+server:
+  port: ${SERVER_PORT:9091}
+  servlet:
+    context-path: /${spring.application.name}
+    encoding:
+      charset: UTF-8
+      force: true
+      enabled: true
+  tomcat:
+    max-threads: ${TOMCAT_MAX_THREADS:200}
+    min-spare-threads: ${TOMCAT_MIN_THREADS:10}
+    max-connections: ${TOMCAT_MAX_CONNECTIONS:10000}
+    connection-timeout: ${TOMCAT_TIMEOUT:5000}
+    accept-count: 100
+    max-http-form-post-size: 20MB
+    uri-encoding: UTF-8
+
+# MyBatis配置优化
+mybatis:
+  typeAliasesPackage: com.qian.system.domain
+  mapperLocations: classpath:mapper/**/*.xml
+  #configLocation: classpath:mybatis/mybatis-config.xml
+  configuration:
+    map-underscore-to-camel-case: true
+    default-fetch-size: 100
+    default-statement-timeout: 30
+    cache-enabled: true
+    call-setters-on-nulls: true
+    jdbc-type-for-null: NULL
+    local-cache-scope: SESSION
+    lazy-loading-enabled: true
+    aggressive-lazy-loading: false
+    use-generated-keys: true
+    log-impl: org.apache.ibatis.logging.slf4j.Slf4jImpl
+
+# Commons 配置
+commons:
+  lang:
+    datetime-format: yyyy-MM-dd HH:mm:ss
+    date-format: yyyy-MM-dd
+    time-format: HH:mm:ss
+
+# 线程池配置
+thread-pool:
+  core-pool-size: ${CORE_POOL_SIZE:10}
+  max-pool-size: ${MAX_POOL_SIZE:50}
+  queue-capacity: ${QUEUE_CAPACITY:200}
+  keep-alive-seconds: ${KEEP_ALIVE_SECONDS:60}
+  thread-name-prefix: qian-async-
+
+# 日志配置
+logging:
+  level:
+    com.alibaba.nacos: debug
+  file:
+    name: d:\logs\qian-system\qian-system.log
+  logback:
+    rollingpolicy:
+      max-file-size: 100MB
+      max-history: 30
+      total-size-cap: 3GB
+    pattern:
+      console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n"
+      file: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n"
+
+# SpringDoc配置
+springdoc:
+  api-docs:
+    enabled: true
+    path: /v3/api-docs
+  swagger-ui:
+    enabled: true
+    path: /swagger-ui.html
+    tags-sorter: alpha
+    operations-sorter: alpha
+  packages-to-scan: com.qian.system.controller
+  paths-to-match: /**
