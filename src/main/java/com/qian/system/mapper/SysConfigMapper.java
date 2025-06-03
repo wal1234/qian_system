@@ -36,7 +36,6 @@ public interface SysConfigMapper {
      * @see mapper/system/SysConfigMapper.xml#selectConfigById
      */
     @ResultMap("SysConfigResult")
-    @Select("select config_id, config_name, config_key, config_value, config_type, create_by, create_time, update_by, update_time, remark from sys_config where config_id = #{configId}")
     SysConfig selectConfigById(Long configId);
 
     /**

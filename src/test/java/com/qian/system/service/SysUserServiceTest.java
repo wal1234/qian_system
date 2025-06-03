@@ -3,7 +3,7 @@ package com.qian.system.service;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import com.qian.system.domain.entity.SysUser;
+import com.qian.system.domain.SysUser;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest

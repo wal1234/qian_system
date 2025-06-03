@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import com.qian.common.annotation.Log;
 import com.qian.system.common.core.controller.BaseController;
 import com.qian.common.response.Response;
-import com.qian.common.core.domain.entity.SysDictType;
+import com.qian.system.domain.SysDictType;
 import com.qian.common.enums.system.BusinessType;
 import com.qian.system.service.ISysDictTypeService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -26,7 +26,7 @@ public class SysDictTypeController extends BaseController {
 
     @Operation(summary = "获取字典类型列表")
     @PreAuthorize("@ss.hasPermi('system:dict:list')")
-    @GetMapping("/list")
+    @GetMapping("/all")
     public Response<List<SysDictType>> list(SysDictType dictType) {
         List<SysDictType> list = dictTypeService.selectDictTypeList(dictType);
         return Response.success(list);
@@ -52,7 +52,7 @@ public class SysDictTypeController extends BaseController {
     @Operation(summary = "新增字典类型")
     @PreAuthorize("@ss.hasPermi('system:dict:add')")
     @Log(title = "字典类型", businessType = BusinessType.INSERT)
-    @PostMapping
+    @PostMapping("/add")
     public Response<Void> add(@Validated @RequestBody SysDictType dict) {
         if ("1".equals(dictTypeService.checkDictTypeUnique(dict))) {
             return Response.error("新增字典'" + dict.getDictName() + "'失败，字典类型已存在");
@@ -64,7 +64,7 @@ public class SysDictTypeController extends BaseController {
     @Operation(summary = "修改字典类型")
     @PreAuthorize("@ss.hasPermi('system:dict:edit')")
     @Log(title = "字典类型", businessType = BusinessType.UPDATE)
-    @PutMapping
+    @PutMapping("/update")
     public Response<Void> edit(@Validated @RequestBody SysDictType dict) {
         if ("1".equals(dictTypeService.checkDictTypeUnique(dict))) {
             return Response.error("修改字典'" + dict.getDictName() + "'失败，字典类型已存在");
@@ -76,7 +76,7 @@ public class SysDictTypeController extends BaseController {
     @Operation(summary = "删除字典类型")
     @PreAuthorize("@ss.hasPermi('system:dict:remove')")
     @Log(title = "字典类型", businessType = BusinessType.DELETE)
-    @DeleteMapping("/{dictIds}")
+    @DeleteMapping("/remove/{dictIds}")
     public Response<Void> remove(@PathVariable Long[] dictIds) {
         return toResponse(dictTypeService.deleteDictTypeByIds(dictIds));
     }

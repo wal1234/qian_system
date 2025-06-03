@@ -2,6 +2,8 @@ package com.qian.system.domain;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Date;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -60,7 +62,7 @@ public class SysDept extends BaseEntity {
     @Size(min = 0, max = 50, message = "邮箱长度不能超过50个字符")
     private String email;
 
-    /** 部门状态:0正常,1停用 */
+    /** 部门状态（0正常 1停用） */
     @Excel(name = "部门状态", readConverterExp = "0=正常,1=停用")
     private String status;
 
@@ -72,6 +74,20 @@ public class SysDept extends BaseEntity {
 
     /** 子部门 */
     private List<SysDept> children = new ArrayList<SysDept>();
+
+    /** 创建者 */
+    private String createBy;
+
+    /** 创建时间 */
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private Date createTime;
+
+    /** 更新者 */
+    private String updateBy;
+
+    /** 更新时间 */
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private Date updateTime;
 
     public SysDept() {
     }

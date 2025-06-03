@@ -12,7 +12,7 @@ import java.util.List;
  * 用户信息
  */
 @RestController
-@RequestMapping("/system/user")
+@RequestMapping("/system/user2")
 public class UserController {
     
     @Autowired

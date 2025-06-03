@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import com.qian.common.annotation.Log;
 import com.qian.system.common.core.controller.BaseController;
 import com.qian.common.response.Response;
-import com.qian.common.core.domain.entity.SysDictData;
+import com.qian.system.domain.SysDictData;
 import com.qian.common.enums.system.BusinessType;
 import com.qian.system.service.ISysDictDataService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -26,7 +26,7 @@ public class SysDictDataController extends BaseController {
 
     @Operation(summary = "获取字典数据列表")
     @PreAuthorize("@ss.hasPermi('system:dict:list')")
-    @GetMapping("/list")
+    @GetMapping("/list/all")
     public Response<List<SysDictData>> list(SysDictData dictData) {
         List<SysDictData> list = dictDataService.selectDictDataList(dictData);
         return Response.success(list);
@@ -58,7 +58,7 @@ public class SysDictDataController extends BaseController {
     @Operation(summary = "新增字典数据")
     @PreAuthorize("@ss.hasPermi('system:dict:add')")
     @Log(title = "字典数据", businessType = BusinessType.INSERT)
-    @PostMapping
+    @PostMapping("/add")
     public Response<Void> add(@Validated @RequestBody SysDictData dict) {
         dict.setCreateBy(getUsername());
         return toResponse(dictDataService.insertDictData(dict));
@@ -67,7 +67,7 @@ public class SysDictDataController extends BaseController {
     @Operation(summary = "修改字典数据")
     @PreAuthorize("@ss.hasPermi('system:dict:edit')")
     @Log(title = "字典数据", businessType = BusinessType.UPDATE)
-    @PutMapping
+    @PutMapping("/update")
     public Response<Void> edit(@Validated @RequestBody SysDictData dict) {
         dict.setUpdateBy(getUsername());
         return toResponse(dictDataService.updateDictData(dict));
@@ -76,7 +76,7 @@ public class SysDictDataController extends BaseController {
     @Operation(summary = "删除字典数据")
     @PreAuthorize("@ss.hasPermi('system:dict:remove')")
     @Log(title = "字典数据", businessType = BusinessType.DELETE)
-    @DeleteMapping("/{dictCodes}")
+    @DeleteMapping("/remove/{dictCodes}")
     public Response<Void> remove(@PathVariable Long[] dictCodes) {
         return toResponse(dictDataService.deleteDictDataByIds(dictCodes));
     }

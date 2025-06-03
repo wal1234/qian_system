@@ -9,6 +9,7 @@ import com.qian.system.service.ISysConfigService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
@@ -21,23 +22,27 @@ import java.util.List;
  */
 @Tag(name = "参数配置管理")
 @RestController
+@Slf4j
 @RequestMapping("/system/config")
 public class SysConfigController extends BaseController {
     @Autowired
     private ISysConfigService configService;
 
     @Operation(summary = "获取参数配置列表")
-    @PreAuthorize("@ss.hasPermi('system:config:list')")
+    //@PreAuthorize("@ss.hasPermi('system:config:list')")
     @GetMapping("/list")
     public Response<List<SysConfig>> list(SysConfig config) {
+        log.info("获取参数配置列表，参数：{}", config);
         List<SysConfig> list = configService.selectConfigList(config);
+        log.info("查询到配置数量：{}", list != null ? list.size() : 0);
         return Response.success(list);
     }
 
     @Operation(summary = "根据参数编号获取详细信息")
-    @PreAuthorize("@ss.hasPermi('system:config:query')")
+    //@PreAuthorize("@ss.hasPermi('system:config:query')")
     @GetMapping("/{configId}")
     public Response<SysConfig> getInfo(@Parameter(description = "参数ID") @PathVariable Long configId) {
+        log.info("根据参数编号获取详细信息{}", configId);
         return Response.success(configService.selectConfigById(configId));
     }
 

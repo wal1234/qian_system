@@ -1,0 +1,25 @@
+# 开发环境配置
+spring:
+  datasource:
+    url: jdbc:mysql://101.34.70.221:3306/qian_sys?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=false&serverTimezone=GMT%2B8&rewriteBatchedStatements=true&allowPublicKeyRetrieval=true
+    username: qian_sys_user
+    password: Sys@10202612
+
+  data:
+    redis:
+      host: 101.34.70.221
+      port: 6379
+      password: kzt10202612
+      database: 0
+
+# 开发环境服务器配置
+server:
+  port: 9091
+
+# 开发环境日志配置
+logging:
+  level:
+    root: INFO
+    com.qian.system: DEBUG
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n" 

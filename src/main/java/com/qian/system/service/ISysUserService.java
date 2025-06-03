@@ -1,7 +1,7 @@
 package com.qian.system.service;
 
 import java.util.List;
-import com.qian.system.domain.entity.SysUser;
+import com.qian.system.domain.SysUser;
 
 /**
  * 用户 业务层

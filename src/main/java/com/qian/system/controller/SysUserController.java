@@ -8,17 +8,19 @@ import org.springframework.web.bind.annotation.*;
 import com.qian.common.annotation.Log;
 import com.qian.system.common.core.controller.BaseController;
 import com.qian.common.response.Response;
-import com.qian.system.domain.entity.SysUser;
+import com.qian.system.domain.SysUser;
 import com.qian.common.enums.system.BusinessType;
 import com.qian.system.service.ISysUserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * 用户信息
  */
-@Tag(name = "用户管理")
+@Slf4j
+@Tag(name = "用户管理", description = "用户管理相关接口")
 @RestController
 @RequestMapping("/system/user")
 public class SysUserController extends BaseController {
@@ -45,9 +47,9 @@ public class SysUserController extends BaseController {
 
     @Operation(summary = "根据用户编号获取详细信息")
     @PreAuthorize("@ss.hasPermi('system:user:query')")
-    @GetMapping(value = "/{userId}")
-    public Response<SysUser> getInfo(@Parameter(description = "用户ID") @PathVariable Long userId) {
-        return Response.success(userService.selectUserById(userId));
+    @GetMapping(value = "/{id}")
+    public Response<SysUser> getInfo(@Parameter(description = "用户ID") @PathVariable Long id) {
+        return Response.success(userService.selectUserById(id));
     }
 
     @Operation(summary = "新增用户")
@@ -55,12 +57,12 @@ public class SysUserController extends BaseController {
     @Log(title = "用户管理", businessType = BusinessType.INSERT)
     @PostMapping
     public Response<Void> add(@Validated @RequestBody SysUser user) {
-        if (!userService.checkUserNameUnique(user.getUserName())) {
-            return Response.error("新增用户'" + user.getUserName() + "'失败，登录账号已存在");
+        if (!userService.checkUserNameUnique(user.getUsername())) {
+            return Response.error("新增用户'" + user.getUsername() + "'失败，登录账号已存在");
         } else if (!userService.checkPhoneUnique(user)) {
-            return Response.error("新增用户'" + user.getUserName() + "'失败，手机号码已存在");
+            return Response.error("新增用户'" + user.getUsername() + "'失败，手机号码已存在");
         } else if (!userService.checkEmailUnique(user)) {
-            return Response.error("新增用户'" + user.getUserName() + "'失败，邮箱账号已存在");
+            return Response.error("新增用户'" + user.getUsername() + "'失败，邮箱账号已存在");
         }
         user.setCreateBy(getUsername());
         return toResponse(userService.insertUser(user));
@@ -71,12 +73,12 @@ public class SysUserController extends BaseController {
     @Log(title = "用户管理", businessType = BusinessType.UPDATE)
     @PutMapping
     public Response<Void> edit(@Validated @RequestBody SysUser user) {
-        if (!userService.checkUserNameUnique(user.getUserName())) {
-            return Response.error("修改用户'" + user.getUserName() + "'失败，登录账号已存在");
+        if (!userService.checkUserNameUnique(user.getUsername())) {
+            return Response.error("修改用户'" + user.getUsername() + "'失败，登录账号已存在");
         } else if (!userService.checkPhoneUnique(user)) {
-            return Response.error("修改用户'" + user.getUserName() + "'失败，手机号码已存在");
+            return Response.error("修改用户'" + user.getUsername() + "'失败，手机号码已存在");
         } else if (!userService.checkEmailUnique(user)) {
-            return Response.error("修改用户'" + user.getUserName() + "'失败，邮箱账号已存在");
+            return Response.error("修改用户'" + user.getUsername() + "'失败，邮箱账号已存在");
         }
         user.setUpdateBy(getUsername());
         return toResponse(userService.updateUser(user));
@@ -85,12 +87,12 @@ public class SysUserController extends BaseController {
     @Operation(summary = "删除用户")
     @PreAuthorize("@ss.hasPermi('system:user:remove')")
     @Log(title = "用户管理", businessType = BusinessType.DELETE)
-    @DeleteMapping("/{userIds}")
-    public Response<Void> remove(@Parameter(description = "用户ID串") @PathVariable Long[] userIds) {
-        if (userService.hasAdminUser(userIds)) {
+    @DeleteMapping("/{ids}")
+    public Response<Void> remove(@Parameter(description = "用户ID串") @PathVariable Long[] ids) {
+        if (userService.hasAdminUser(ids)) {
             return Response.error("不允许删除超级管理员用户");
         }
-        return toResponse(userService.deleteUserByIds(userIds));
+        return toResponse(userService.deleteUserByIds(ids));
     }
 
     @Operation(summary = "重置密码")
@@ -107,6 +109,22 @@ public class SysUserController extends BaseController {
     @PutMapping("/changeStatus")
     public Response<Void> changeStatus(@RequestBody SysUser user) {
         return toResponse(userService.updateUserStatus(user));
+    }
+
+    @Operation(summary = "更新用户头像")
+    @PreAuthorize("@ss.hasPermi('system:user:edit')")
+    @Log(title = "用户管理", businessType = BusinessType.UPDATE)
+    @PutMapping("/updateAvatar")
+    public Response<Void> updateAvatar(@RequestBody SysUser user) {
+        return toResponse(userService.updateUser(user));
+    }
+
+    @Operation(summary = "更新用户个人信息")
+    @PreAuthorize("@ss.hasPermi('system:user:edit')")
+    @Log(title = "用户管理", businessType = BusinessType.UPDATE)
+    @PutMapping("/updateProfile")
+    public Response<Void> updateProfile(@RequestBody SysUser user) {
+        return toResponse(userService.updateUserProfile(user));
     }
 
     /**

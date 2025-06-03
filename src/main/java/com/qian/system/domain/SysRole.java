@@ -31,8 +31,8 @@ public class SysRole extends BaseEntity {
     @Schema(description = "角色排序")
     private Integer roleSort;
 
-    /** 数据范围（1：全部数据权限 2：自定数据权限 3：本部门数据权限 4：本部门及以下数据权限） */
-    @Schema(description = "数据范围（1：全部数据权限 2：自定数据权限 3：本部门数据权限 4：本部门及以下数据权限）")
+    /** 数据范围（1：全部数据权限 2：自定数据权限 3：本部门数据权限 4：本部门及以下数据权限 5：仅本人数据权限） */
+    @Schema(description = "数据范围（1：全部数据权限 2：自定数据权限 3：本部门数据权限 4：本部门及以下数据权限 5：仅本人数据权限）")
     private String dataScope;
 
     /** 菜单树选择项是否关联显示（ 0：父子不互相关联显示 1：父子互相关联显示） */
@@ -67,6 +67,31 @@ public class SysRole extends BaseEntity {
     @Schema(description = "角色菜单权限")
     private Set<String> permissions;
 
+    /** 数据权限范围枚举 */
+    public enum DataScope {
+        ALL("1", "全部数据权限"),
+        CUSTOM("2", "自定数据权限"),
+        DEPT("3", "本部门数据权限"),
+        DEPT_AND_CHILD("4", "本部门及以下数据权限"),
+        SELF("5", "仅本人数据权限");
+
+        private final String code;
+        private final String info;
+
+        DataScope(String code, String info) {
+            this.code = code;
+            this.info = info;
+        }
+
+        public String getCode() {
+            return code;
+        }
+
+        public String getInfo() {
+            return info;
+        }
+    }
+
     public SysRole() {
     }
 
@@ -75,10 +100,10 @@ public class SysRole extends BaseEntity {
     }
 
     public boolean isAdmin() {
-        return isAdmin(this.roleId);
+        return isAdmin(this.roleKey);
     }
 
-    public static boolean isAdmin(Long roleId) {
-        return roleId != null && 1L == roleId;
+    public static boolean isAdmin(String roleKey) {
+        return roleKey != null && "admin".equals(roleKey);
     }
 } 

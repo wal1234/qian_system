@@ -1,0 +1,18 @@
+spring:
+  application:
+    name: qian-system
+  profiles:
+    active: ${ENV:dev}
+  cloud:
+    # 禁用 Spring Cloud 功能
+    enabled: false
+    nacos:
+      # 禁用服务发现
+      discovery:
+        enabled: false
+        register-enabled: false
+        auto-register: false
+      config:
+        # 禁用配置中心
+        enabled: false
+        refresh-enabled: false

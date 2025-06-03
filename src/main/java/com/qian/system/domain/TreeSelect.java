@@ -3,7 +3,7 @@ package com.qian.system.domain;
 import java.util.List;
 
 /**
- * 树形选择
+ * 树形结构实体类
  */
 public class TreeSelect {
     /** 节点ID */

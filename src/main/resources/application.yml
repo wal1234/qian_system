@@ -5,9 +5,9 @@ spring:
     allow-bean-definition-overriding: true
   profiles:
     active: ${ENV:dev}
-  # Spring Cloud 2021需要添加这一行
+  # 添加 Nacos 配置导入
   config:
-    import: optional:nacos:${spring.application.name}-${spring.profiles.active}.${spring.cloud.nacos.config.file-extension}
+    import: optional:nacos:${spring.application.name}-${spring.profiles.active}.yml
   # 数据源配置
   datasource:
     type: com.alibaba.druid.pool.DruidDataSource
@@ -56,54 +56,80 @@ spring:
           config:
             multi-statement-allow: true
   # Redis配置
-  redis:
-    host: ${REDIS_HOST:101.34.70.221}
-    port: ${REDIS_PORT:6379}
-    password: ${REDIS_PASSWORD:kzt10202612}
-    database: ${REDIS_DATABASE:0}
-    timeout: ${REDIS_TIMEOUT:10000}
-    lettuce:
-      pool:
-        max-active: ${REDIS_MAX_ACTIVE:8}
-        max-wait: ${REDIS_MAX_WAIT:-1}
-        max-idle: ${REDIS_MAX_IDLE:8}
-        min-idle: ${REDIS_MIN_IDLE:0}
-    # 开启事务支持
-    enable-transaction-support: true
-    # 开启键空间通知
-    keyspace-events: Ex
+  data:
+    redis:
+      host: ${REDIS_HOST:101.34.70.221}
+      port: ${REDIS_PORT:6379}
+      password: ${REDIS_PASSWORD:kzt10202612}
+      database: ${REDIS_DATABASE:0}
+      timeout: ${REDIS_TIMEOUT:10000}
+      lettuce:
+        pool:
+          # 连接池最大连接数
+          max-active: ${REDIS_MAX_ACTIVE:20}
+          # 连接池最大阻塞等待时间（使用负值表示没有限制）
+          max-wait: ${REDIS_MAX_WAIT:-1}
+          # 连接池中的最大空闲连接
+          max-idle: ${REDIS_MAX_IDLE:10}
+          # 连接池中的最小空闲连接
+          min-idle: ${REDIS_MIN_IDLE:2}
+        # 关闭连接前，允许空闲时间（单位：毫秒）
+        shutdown-timeout: 5000
+      # 开启事务支持
+      enable-transaction-support: true
+      # 开启键空间通知
+      keyspace-events: Ex
+      # 设置客户端连接和操作的超时配置
+      connect-timeout: 2000
   cloud:
+    # 禁用 Spring Cloud 功能
+    enabled: false
     nacos:
+      # 禁用服务发现
       discovery:
-        server-addr: ${NACOS_SERVER_ADDR:101.34.70.221:8848}
-        namespace: ${NACOS_NAMESPACE:qian_blog}
-        username: ${NACOS_USERNAME:qian_blog}
-        password: ${NACOS_PASSWORD:kzt10202612}
-        # 连接设置
-        fail-fast: false
-        watch-delay: 30000
-        watch-enabled: true
+        enabled: false
+        register-enabled: false
+        auto-register: false
       config:
-        server-addr: ${NACOS_SERVER_ADDR:101.34.70.221:8848}
-        namespace: ${NACOS_NAMESPACE:qian_blog}
-        file-extension: yml
-        username: ${NACOS_USERNAME:qian_blog}
-        password: ${NACOS_PASSWORD:kzt10202612}
-        timeout: 15000
-        max-retry: 5
-        retry-interval: 3000
-        # 指定需要加载的其他配置文件
-        shared-configs:
-          - data-id: application
-            refresh: true
-          - data-id: qian_system
-            refresh: true
-    # 禁用Eureka自动配置
+        # 禁用配置中心
+        enabled: false
+        import-check:
+          enabled: false
+        refresh-enabled: false
+    # 禁用所有服务注册相关功能
+    service-registry:
+      auto-registration:
+        enabled: false
+    loadbalancer:
+      enabled: false
     eureka:
       client:
         enabled: false
       instance:
         enabled: false
+    # 禁用配置发现
+    discovery:
+      enabled: false
+
+# Token配置
+token:
+  # 令牌自定义标识
+  header: Authorization
+  # 令牌密钥
+  secret: qianBlogSecret
+  # 令牌有效期（默认30分钟）
+  expireTime: 30
+
+# JWT配置
+jwt:
+  # JWT加解密使用的密钥
+  secret: qianBlogJwtSecret
+  # JWT的有效期，单位秒，默认2小时
+  expiration: 7200
+  # JWT存储的请求头
+  header: Authorization
+  # JWT负载中拿到开头
+  tokenHead: Bearer 
 
 # Feign配置
 feign:
@@ -143,15 +169,11 @@ server:
 
 # MyBatis配置
 mybatis:
-  # 类型别名包配置 - 保持唯一配置，不要在mybatis-config.xml中重复配置
-  typeAliasesPackage: com.qian.system.domain
+  # 类型别名包配置
+  typeAliasesPackage: com.qian.system.domain,com.qian.system.domain.entity
   # Mapper文件位置
-  mapperLocations: classpath:mapper/**/*.xml
-  # MyBatis配置文件位置 - 此文件中不要再配置typeAliases节点
-  configLocation: classpath:mybatis/mybatis-config.xml
-  # 是否启用自定义Mapper扫描器 - 默认禁用，避免与@MapperScan冲突
-  # 特别注意：所有Mapper接口都需要添加@Mapper注解，确保能正确被扫描到
-  use-custom-scanner: false
+  mapperLocations: classpath*:mapper/**/*.xml
+
 
 # Commons 配置
 commons:
@@ -176,10 +198,14 @@ thread-pool:
 logging:
   level:
     root: ${LOG_LEVEL_ROOT:INFO}
-    com.alibaba.nacos: ${LOG_LEVEL_NACOS:WARN}
+    com.alibaba.nacos: DEBUG  # 调整为 DEBUG 级别，以便查看详细日志
+    com.alibaba.cloud.nacos: DEBUG  # 保持 DEBUG 以便调试
+    com.alibaba.nacos.client.config: DEBUG  # 添加 Nacos 客户端配置日志
+    com.alibaba.nacos.client.naming: DEBUG  # 添加 Nacos 服务发现日志
     com.qian.system.feign: ${LOG_LEVEL_FEIGN:DEBUG}
     com.qian.system.mapper: ${LOG_LEVEL_MAPPER:DEBUG}
   file:
+    path: ${LOG_PATH:./logs}
     name: ${LOG_PATH:./logs}/qian-system/qian-system.log
   logback:
     rollingpolicy:

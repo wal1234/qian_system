@@ -2,7 +2,7 @@ package com.qian.system.mapper;
 
 import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
-import com.qian.system.domain.entity.SysPost;
+import com.qian.system.domain.SysPost;
 
 /**
  * 岗位信息 数据层

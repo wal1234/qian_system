@@ -4,7 +4,7 @@ import com.qian.system.common.exception.ServiceException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import com.qian.common.security.LoginUser;
+import com.qian.system.domain.LoginUser;
 
 public class SecurityUtils {
     /**
@@ -66,6 +66,12 @@ public class SecurityUtils {
      * @return 结果
      */
     public static boolean isAdmin(Long userId) {
-        return userId != null && 1L == userId;
+        try {
+            LoginUser loginUser = getLoginUser();
+            return loginUser != null && loginUser.getUser() != null && 
+                   "admin".equals(loginUser.getUser().getRole());
+        } catch (Exception e) {
+            return false;
+        }
     }
 } 

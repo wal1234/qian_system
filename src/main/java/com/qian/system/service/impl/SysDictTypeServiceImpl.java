@@ -4,7 +4,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.qian.common.constants.UserConstants;
-import com.qian.common.core.domain.entity.SysDictType;
+import com.qian.system.domain.SysDictType;
 import com.qian.system.common.exception.ServiceException;
 import com.qian.system.common.utils.StringUtils;
 import com.qian.system.mapper.SysDictDataMapper;

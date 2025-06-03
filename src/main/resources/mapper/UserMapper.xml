@@ -34,7 +34,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </sql>
     
     <!-- 查询用户列表 -->
-    <select id="selectUserList" parameterType="User" resultMap="UserResult">
+    <select id="selectUserList" parameterType="com.qian.system.domain.User" resultMap="UserResult">
         <include refid="selectUserVo"/>
         <where>
             <if test="username != null and username != ''">
@@ -60,31 +60,31 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </select>
     
     <!-- 根据用户名查询用户 -->
-    <select id="selectUserByUserName" parameterType="String" resultMap="UserResult">
+    <select id="selectUserByUserName" parameterType="java.lang.String" resultMap="UserResult">
         <include refid="selectUserVo"/>
         WHERE username = #{userName} AND deleted = 0 LIMIT 1
     </select>
 
     <!-- 根据用户ID查询用户 -->
-    <select id="selectUserById" parameterType="Long" resultMap="UserResult">
+    <select id="selectUserById" parameterType="java.lang.Long" resultMap="UserResult">
         <include refid="selectUserVo"/>
         WHERE id = #{userId} AND deleted = 0
     </select>
 
     <!-- 根据手机号查询用户 -->
-    <select id="selectUserByPhoneNumber" parameterType="String" resultMap="UserResult">
+    <select id="selectUserByPhoneNumber" parameterType="java.lang.String" resultMap="UserResult">
         <include refid="selectUserVo"/>
         WHERE phone = #{phoneNumber} AND deleted = 0 LIMIT 1
     </select>
 
     <!-- 根据邮箱查询用户 -->
-    <select id="selectUserByEmailAddress" parameterType="String" resultMap="UserResult">
+    <select id="selectUserByEmailAddress" parameterType="java.lang.String" resultMap="UserResult">
         <include refid="selectUserVo"/>
         WHERE email = #{emailAddress} AND deleted = 0 LIMIT 1
     </select>
 
     <!-- 统计管理员用户数量 -->
-    <select id="countAdminUserByIds" parameterType="array" resultType="int">
+    <select id="countAdminUserByIds" resultType="java.lang.Integer">
         SELECT COUNT(*) FROM user_info 
         WHERE id IN
         <foreach collection="array" item="userId" open="(" separator="," close=")">
