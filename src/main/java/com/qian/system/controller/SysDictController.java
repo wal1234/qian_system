@@ -1,10 +1,9 @@
 package com.qian.system.controller;
 
-import com.qian.system.domain.SysDictData;
-import com.qian.system.domain.SysDictType;
+import com.qian.system.domain.entity.SysDictData;
+import com.qian.system.domain.entity.SysDictType;
 import com.qian.common.annotation.Log;
 import com.qian.system.common.core.controller.BaseController;
-import com.qian.common.enums.system.BusinessType;
 import com.qian.common.response.Response;
 import com.qian.system.service.ISysDictDataService;
 import com.qian.system.service.ISysDictTypeService;
@@ -39,7 +38,7 @@ public class SysDictController extends BaseController {
 
     @Operation(summary = "新增字典类型")
     @PreAuthorize("@ss.hasPermi('system:dict:add')")
-    @Log(title = "字典类型", businessType = BusinessType.INSERT)
+    @Log(title = "字典类型", businessType = "INSERT")
     @PostMapping("/type-add")
     public Response<Void> add(@RequestBody SysDictType dict) {
         if ("1".equals(dictTypeService.checkDictTypeUnique(dict))) {
@@ -51,7 +50,7 @@ public class SysDictController extends BaseController {
 
     @Operation(summary = "修改字典类型")
     @PreAuthorize("@ss.hasPermi('system:dict:edit')")
-    @Log(title = "字典类型", businessType = BusinessType.UPDATE)
+    @Log(title = "字典类型", businessType = "UPDATE")
     @PutMapping("/type-update")
     public Response<Void> edit(@RequestBody SysDictType dict) {
         if ("1".equals(dictTypeService.checkDictTypeUnique(dict))) {
@@ -63,7 +62,7 @@ public class SysDictController extends BaseController {
 
     @Operation(summary = "删除字典类型")
     @PreAuthorize("@ss.hasPermi('system:dict:remove')")
-    @Log(title = "字典类型", businessType = BusinessType.DELETE)
+    @Log(title = "字典类型", businessType = "DELETE")
     @DeleteMapping("/type-delete/{dictIds}")
     public Response<Void> removeType(@PathVariable Long[] dictIds) {
         return toResponse(dictTypeService.deleteDictTypeByIds(dictIds));
@@ -79,7 +78,7 @@ public class SysDictController extends BaseController {
 
     @Operation(summary = "新增字典数据")
     @PreAuthorize("@ss.hasPermi('system:dict:add')")
-    @Log(title = "字典数据", businessType = BusinessType.INSERT)
+    @Log(title = "字典数据", businessType = "INSERT")
     @PostMapping("/data-add")
     public Response<Void> add(@RequestBody SysDictData dict) {
         dict.setCreateBy(getUsername());
@@ -88,7 +87,7 @@ public class SysDictController extends BaseController {
 
     @Operation(summary = "修改字典数据")
     @PreAuthorize("@ss.hasPermi('system:dict:edit')")
-    @Log(title = "字典数据", businessType = BusinessType.UPDATE)
+    @Log(title = "字典数据", businessType = "UPDATE")
     @PutMapping("/data-update")
     public Response<Void> edit(@RequestBody SysDictData dict) {
         dict.setUpdateBy(getUsername());
@@ -97,7 +96,7 @@ public class SysDictController extends BaseController {
 
     @Operation(summary = "删除字典数据")
     @PreAuthorize("@ss.hasPermi('system:dict:remove')")
-    @Log(title = "字典数据", businessType = BusinessType.DELETE)
+    @Log(title = "字典数据", businessType = "DELETE")
     @DeleteMapping("/data-delete/{dictCodes}")
     public Response<Void> removeData(@PathVariable Long[] dictCodes) {
         return toResponse(dictDataService.deleteDictDataByIds(dictCodes));

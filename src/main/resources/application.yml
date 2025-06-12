@@ -170,10 +170,19 @@ server:
 # MyBatis配置
 mybatis:
   # 类型别名包配置
-  typeAliasesPackage: com.qian.system.domain,com.qian.system.domain.entity
+  typeAliasesPackage: com.qian.system.domain.entity
   # Mapper文件位置
   mapperLocations: classpath*:mapper/**/*.xml
-
+  # 配置映射器
+  configuration:
+    map-underscore-to-camel-case: true
+    cache-enabled: true
+    lazy-loading-enabled: true
+    multiple-result-sets-enabled: true
+    use-column-label: true
+    default-fetch-size: 100
+    default-statement-timeout: 30
+    log-impl: org.apache.ibatis.logging.slf4j.Slf4jImpl
 
 # Commons 配置
 commons:
@@ -197,13 +206,17 @@ thread-pool:
 # 日志配置
 logging:
   level:
-    root: ${LOG_LEVEL_ROOT:INFO}
-    com.alibaba.nacos: DEBUG  # 调整为 DEBUG 级别，以便查看详细日志
-    com.alibaba.cloud.nacos: DEBUG  # 保持 DEBUG 以便调试
-    com.alibaba.nacos.client.config: DEBUG  # 添加 Nacos 客户端配置日志
-    com.alibaba.nacos.client.naming: DEBUG  # 添加 Nacos 服务发现日志
+    root: ${LOG_LEVEL_ROOT:DEBUG}  # 修改为 DEBUG 级别
+    com.alibaba.nacos: DEBUG
+    com.alibaba.cloud.nacos: DEBUG
+    com.alibaba.nacos.client.config: DEBUG
+    com.alibaba.nacos.client.naming: DEBUG
+    com.qian.system: DEBUG  # 添加系统模块的调试日志
     com.qian.system.feign: ${LOG_LEVEL_FEIGN:DEBUG}
     com.qian.system.mapper: ${LOG_LEVEL_MAPPER:DEBUG}
+    org.springframework: DEBUG  # 添加 Spring 框架的调试日志
+    org.springframework.boot: DEBUG  # 添加 Spring Boot 的调试日志
+    org.springframework.context: DEBUG  # 添加 Spring 上下文的调试日志
   file:
     path: ${LOG_PATH:./logs}
     name: ${LOG_PATH:./logs}/qian-system/qian-system.log
@@ -226,5 +239,16 @@ springdoc:
     path: /swagger-ui.html
     tags-sorter: alpha
     operations-sorter: alpha
-  packages-to-scan: com.qian.system.controller
+    disable-swagger-default-url: true
+    display-request-duration: true
+    filter: true
+  packages-to-scan: com.qian.system.controller,com.qian.common.controller
   paths-to-match: /**
+  default-consumes-media-type: application/json
+  default-produces-media-type: application/json
+  show-actuator: true
+  use-management-port: false
+  write-pretty: true
+
+# 调试配置
+debug: true  # 启用调试模式

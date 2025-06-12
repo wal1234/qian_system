@@ -2,7 +2,7 @@ package com.qian.system.mapper;
 
 import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
-import com.qian.system.domain.SysRoleDept;
+import com.qian.system.domain.entity.SysRoleDept;
 
 /**
  * 角色与部门关联表 数据层

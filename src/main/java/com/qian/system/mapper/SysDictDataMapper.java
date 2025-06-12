@@ -2,7 +2,7 @@ package com.qian.system.mapper;
 
 import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
-import com.qian.system.domain.SysDictData;
+import com.qian.system.domain.entity.SysDictData;
 
 /**
  * 字典表 数据层

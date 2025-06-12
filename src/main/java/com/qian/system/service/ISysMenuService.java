@@ -1,37 +1,22 @@
 package com.qian.system.service;
 
+import com.baomidou.mybatisplus.extension.service.IService;
+import com.qian.system.domain.entity.SysMenu;
 import java.util.List;
 import java.util.Set;
-import com.qian.system.domain.SysMenu;
 
 /**
- * 菜单 业务层
+ * 菜单权限 服务层
  */
-public interface ISysMenuService {
-    /**
-     * 根据用户查询系统菜单列表
-     * 
-     * @param userId 用户ID
-     * @return 菜单列表
-     */
-    public List<SysMenu> selectMenuList(Long userId);
-
-    /**
-     * 根据用户查询系统菜单列表
-     * 
-     * @param menu 菜单信息
-     * @param userId 用户ID
-     * @return 菜单列表
-     */
-    public List<SysMenu> selectMenuList(SysMenu menu, Long userId);
-
+public interface ISysMenuService extends IService<SysMenu> {
+    
     /**
      * 根据用户ID查询权限
      * 
      * @param userId 用户ID
      * @return 权限列表
      */
-    public Set<String> selectMenuPermsByUserId(Long userId);
+    Set<String> selectMenuPermsByUserId(Long userId);
 
     /**
      * 根据用户ID查询菜单树信息
@@ -39,7 +24,7 @@ public interface ISysMenuService {
      * @param userId 用户ID
      * @return 菜单列表
      */
-    public List<SysMenu> selectMenuTreeByUserId(Long userId);
+    List<SysMenu> selectMenuTreeByUserId(Long userId);
 
     /**
      * 根据角色ID查询菜单树信息
@@ -47,7 +32,7 @@ public interface ISysMenuService {
      * @param roleId 角色ID
      * @return 选中菜单列表
      */
-    public List<Long> selectMenuListByRoleId(Long roleId);
+    List<Long> selectMenuListByRoleId(Long roleId);
 
     /**
      * 构建前端所需要的菜单
@@ -55,15 +40,15 @@ public interface ISysMenuService {
      * @param menus 菜单列表
      * @return 菜单列表
      */
-    public List<SysMenu> buildMenuTree(List<SysMenu> menus);
+    List<SysMenu> buildMenuTree(List<SysMenu> menus);
 
     /**
-     * 构建前端所需要的下拉树结构
+     * 构建前端路由所需要的菜单
      * 
      * @param menus 菜单列表
-     * @return 下拉树结构列表
+     * @return 路由列表
      */
-    public List<SysMenu> buildMenuTreeSelect(List<SysMenu> menus);
+    List<SysMenu> buildMenus(List<SysMenu> menus);
 
     /**
      * 根据菜单ID查询信息
@@ -71,23 +56,23 @@ public interface ISysMenuService {
      * @param menuId 菜单ID
      * @return 菜单信息
      */
-    public SysMenu selectMenuById(Long menuId);
+    SysMenu selectMenuById(Long menuId);
 
     /**
      * 是否存在菜单子节点
      * 
      * @param menuId 菜单ID
-     * @return 结果 true 存在 false 不存在
+     * @return 结果
      */
-    public boolean hasChildByMenuId(Long menuId);
+    boolean hasChildByMenuId(Long menuId);
 
     /**
      * 查询菜单是否存在角色
      * 
      * @param menuId 菜单ID
-     * @return 结果 true 存在 false 不存在
+     * @return 结果
      */
-    public boolean checkMenuExistRole(Long menuId);
+    boolean checkMenuExistRole(Long menuId);
 
     /**
      * 新增保存菜单信息
@@ -95,7 +80,7 @@ public interface ISysMenuService {
      * @param menu 菜单信息
      * @return 结果
      */
-    public int insertMenu(SysMenu menu);
+    boolean insertMenu(SysMenu menu);
 
     /**
      * 修改保存菜单信息
@@ -103,7 +88,7 @@ public interface ISysMenuService {
      * @param menu 菜单信息
      * @return 结果
      */
-    public int updateMenu(SysMenu menu);
+    boolean updateMenu(SysMenu menu);
 
     /**
      * 删除菜单管理信息
@@ -111,7 +96,7 @@ public interface ISysMenuService {
      * @param menuId 菜单ID
      * @return 结果
      */
-    public int deleteMenuById(Long menuId);
+    boolean deleteMenuById(Long menuId);
 
     /**
      * 校验菜单名称是否唯一
@@ -119,5 +104,5 @@ public interface ISysMenuService {
      * @param menu 菜单信息
      * @return 结果
      */
-    public boolean checkMenuNameUnique(SysMenu menu);
+    boolean checkMenuNameUnique(SysMenu menu);
 } 

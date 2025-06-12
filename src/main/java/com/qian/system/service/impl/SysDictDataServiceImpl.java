@@ -3,7 +3,7 @@ package com.qian.system.service.impl;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.qian.system.domain.SysDictData;
+import com.qian.system.domain.entity.SysDictData;
 import com.qian.system.mapper.SysDictDataMapper;
 import com.qian.system.service.ISysDictDataService;
 

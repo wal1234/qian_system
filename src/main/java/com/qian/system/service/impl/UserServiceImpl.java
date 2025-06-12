@@ -1,6 +1,6 @@
 package com.qian.system.service.impl;
 
-import com.qian.system.domain.User;
+import com.qian.system.domain.entity.User;
 import com.qian.system.mapper.UserMapper;
 import com.qian.system.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;

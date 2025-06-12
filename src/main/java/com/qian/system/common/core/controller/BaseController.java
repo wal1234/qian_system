@@ -4,7 +4,8 @@ import com.github.pagehelper.PageInfo;
 import com.qian.system.common.core.page.TableDataInfo;
 import com.qian.system.common.utils.PageUtils;
 import com.qian.common.utils.DateUtils;
-import com.qian.system.common.utils.SecurityUtils;
+import com.qian.common.utils.SecurityUtils;
+import com.qian.common.response.Response;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 
@@ -60,35 +61,29 @@ public class BaseController {
     /**
      * 返回成功
      */
-    public <T> TableDataInfo<T> success() {
-        return getDataTable(null);
+    public <T> Response<T> success() {
+        return Response.success();
     }
 
     /**
      * 返回失败消息
      */
-    public <T> TableDataInfo<T> error() {
-        return error("操作失败");
+    public <T> Response<T> error() {
+        return Response.error();
     }
 
     /**
      * 返回失败消息
      */
-    public <T> TableDataInfo<T> error(String message) {
-        TableDataInfo<T> rspData = new TableDataInfo<>();
-        rspData.setCode(500);
-        rspData.setMsg(message);
-        return rspData;
+    public <T> Response<T> error(String message) {
+        return Response.error(message);
     }
 
     /**
      * 返回成功消息
      */
-    public <T> TableDataInfo<T> success(String message) {
-        TableDataInfo<T> rspData = new TableDataInfo<>();
-        rspData.setCode(200);
-        rspData.setMsg(message);
-        return rspData;
+    public Response<String> success(String message) {
+        return Response.success(message);
     }
 
     /**

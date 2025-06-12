@@ -1,18 +1,15 @@
 package com.qian.system.service.impl;
 
-import com.qian.system.domain.SysLoginLog;
-import com.qian.system.mapper.SysLoginLogMapper;
-import com.qian.system.service.ISysLoginLogService;
-import lombok.extern.slf4j.Slf4j;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
+import com.qian.system.mapper.SysLoginLogMapper;
+import com.qian.system.domain.entity.SysLoginLog;
+import com.qian.system.service.ISysLoginLogService;
 
 /**
  * 系统访问日志情况信息 服务层处理
  */
-@Slf4j
 @Service
 public class SysLoginLogServiceImpl implements ISysLoginLogService {
     @Autowired
@@ -32,7 +29,7 @@ public class SysLoginLogServiceImpl implements ISysLoginLogService {
      * 查询系统登录日志集合
      * 
      * @param loginLog 访问日志对象
-     * @return 记录集合
+     * @return 登录记录集合
      */
     @Override
     public List<SysLoginLog> selectLoginLogList(SysLoginLog loginLog) {

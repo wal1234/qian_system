@@ -1,8 +1,8 @@
 package com.qian.system.service;
 
 import java.util.List;
-import com.qian.system.domain.TreeSelect;
-import com.qian.system.domain.SysDept;
+import com.qian.system.domain.entity.SysDept;
+import com.qian.system.domain.entity.TreeSelect;
 
 /**
  * 部门管理 服务层

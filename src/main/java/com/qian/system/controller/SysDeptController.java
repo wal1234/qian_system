@@ -7,19 +7,20 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import com.qian.common.annotation.Log;
 import com.qian.system.common.core.controller.BaseController;
-import com.qian.system.domain.TreeSelect;
-import com.qian.common.enums.system.BusinessType;
+import com.qian.system.domain.entity.TreeSelect;
 import com.qian.common.response.Response;
-import com.qian.system.domain.SysDept;
+import com.qian.system.domain.entity.SysDept;
 import com.qian.system.service.ISysDeptService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * 部门信息
  */
+@Slf4j
 @Tag(name = "部门管理")
 @RestController
 @RequestMapping("/system/dept")
@@ -69,7 +70,7 @@ public class SysDeptController extends BaseController {
     @Operation(summary = "新增部门")
     @Parameter(name = "dept", description = "部门信息", required = true)
     @PreAuthorize("@ss.hasPermi('system:dept:add')")
-    @Log(title = "部门管理", businessType = BusinessType.INSERT)
+    @Log(title = "部门管理", businessType = "INSERT")
     @PostMapping
     public Response<Void> add(@Validated @RequestBody SysDept dept) {
         if (!deptService.checkDeptNameUnique(dept)) {
@@ -82,7 +83,7 @@ public class SysDeptController extends BaseController {
     @Operation(summary = "修改部门")
     @Parameter(name = "dept", description = "部门信息", required = true)
     @PreAuthorize("@ss.hasPermi('system:dept:edit')")
-    @Log(title = "部门管理", businessType = BusinessType.UPDATE)
+    @Log(title = "部门管理", businessType = "UPDATE")
     @PutMapping
     public Response<Void> edit(@Validated @RequestBody SysDept dept) {
         if (!deptService.checkDeptNameUnique(dept)) {
@@ -97,7 +98,7 @@ public class SysDeptController extends BaseController {
     @Operation(summary = "删除部门")
     @Parameter(name = "deptId", description = "部门编号", required = true)
     @PreAuthorize("@ss.hasPermi('system:dept:remove')")
-    @Log(title = "部门管理", businessType = BusinessType.DELETE)
+    @Log(title = "部门管理", businessType = "DELETE")
     @DeleteMapping("/{deptId}")
     public Response<Void> remove(@PathVariable Long deptId) {
         if (deptService.hasChildByDeptId(deptId)) {

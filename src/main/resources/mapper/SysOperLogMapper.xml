@@ -4,7 +4,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.qian.system.mapper.SysOperLogMapper">
 
-    <resultMap type="com.qian.system.domain.SysOperLog" id="OperLogResult">
+    <resultMap type="com.qian.system.domain.entity.SysOperLog" id="OperLogResult">
         <id     property="operId"        column="id"           />
         <result property="title"         column="title"        />
         <result property="businessType"  column="business_type"/>
@@ -31,7 +31,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         from sys_operation_log
     </sql>
 
-    <insert id="insertOperLog" parameterType="com.qian.system.domain.SysOperLog">
+    <insert id="insertOperLog" parameterType="com.qian.system.domain.entity.SysOperLog">
         insert into sys_operation_log(
             title, business_type, method, request_method, operator_type, operation_name, dept_name, oper_url, operation_ip, operation_location, operation_param, json_result, status, error_msg, operation_time, create_time, update_time, del_flag
         )values(
@@ -39,7 +39,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         )
     </insert>
 
-    <select id="selectOperLogList" parameterType="com.qian.system.domain.SysOperLog" resultMap="OperLogResult">
+    <select id="selectOperLogList" parameterType="com.qian.system.domain.entity.SysOperLog" resultMap="OperLogResult">
         <include refid="selectOperLogVo"/>
         <where>
             <if test="title != null and title != ''">

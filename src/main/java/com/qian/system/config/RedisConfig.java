@@ -31,28 +31,18 @@ public class RedisConfig {
      * @return RedisTemplate对象
      */
     @Bean
-    @SuppressWarnings(value = { "unchecked", "rawtypes" })
     public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory connectionFactory) {
         RedisTemplate<String, Object> template = new RedisTemplate<>();
         template.setConnectionFactory(connectionFactory);
         
-        // 使用Jackson2JsonRedisSerializer替换默认序列化
-        Jackson2JsonRedisSerializer serializer = new Jackson2JsonRedisSerializer(Object.class);
+        // 使用Jackson2JsonRedisSerializer来序列化和反序列化redis的value值
+        Jackson2JsonRedisSerializer<Object> serializer = new Jackson2JsonRedisSerializer<>(Object.class);
         
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.ANY);
-        mapper.activateDefaultTyping(LaissezFaireSubTypeValidator.instance, 
-                ObjectMapper.DefaultTyping.NON_FINAL);
-        serializer.setObjectMapper(mapper);
-        
-        // 使用StringRedisSerializer来序列化和反序列化redis的key
-        template.setKeySerializer(new StringRedisSerializer());
         template.setValueSerializer(serializer);
-        
-        // Hash的key也采用StringRedisSerializer的序列化方式
+        // 使用StringRedisSerializer来序列化和反序列化redis的key值
+        template.setKeySerializer(new StringRedisSerializer());
         template.setHashKeySerializer(new StringRedisSerializer());
         template.setHashValueSerializer(serializer);
-        
         template.afterPropertiesSet();
         return template;
     }

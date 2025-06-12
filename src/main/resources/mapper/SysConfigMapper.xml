@@ -4,7 +4,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.qian.system.mapper.SysConfigMapper">
     
-    <resultMap type="com.qian.system.domain.SysConfig" id="SysConfigResult">
+    <resultMap type="com.qian.system.domain.entity.SysConfig" id="SysConfigResult">
         <id     property="configId"      column="config_id"      />
         <result property="configName"    column="config_name"    />
         <result property="configKey"     column="config_key"     />
@@ -22,7 +22,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         from sys_config
     </sql>
     
-    <select id="selectConfigList" parameterType="com.qian.system.domain.SysConfig" resultMap="SysConfigResult">
+    <select id="selectConfigList" parameterType="com.qian.system.domain.entity.SysConfig" resultMap="SysConfigResult">
         <include refid="selectConfigVo"/>
         <where>
             <if test="configName != null and configName != ''">
@@ -53,7 +53,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where config_key = #{configKey}
     </select>
     
-    <insert id="insertConfig" parameterType="com.qian.system.domain.SysConfig">
+    <insert id="insertConfig" parameterType="com.qian.system.domain.entity.SysConfig">
         insert into sys_config (
             <if test="configName != null and configName != ''">config_name,</if>
             <if test="configKey != null and configKey != ''">config_key,</if>
@@ -73,7 +73,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         )
     </insert>
     
-    <update id="updateConfig" parameterType="com.qian.system.domain.SysConfig">
+    <update id="updateConfig" parameterType="com.qian.system.domain.entity.SysConfig">
         update sys_config
         <set>
             <if test="configName != null and configName != ''">config_name = #{configName},</if>

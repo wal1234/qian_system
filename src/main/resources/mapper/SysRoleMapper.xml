@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.qian.system.mapper.SysRoleMapper">
 
-    <resultMap type="com.qian.system.domain.SysRole" id="SysRoleResult">
+    <resultMap type="com.qian.system.domain.entity.SysRole" id="SysRoleResult">
         <id     property="roleId"       column="role_id"        />
         <result property="roleName"     column="role_name"      />
         <result property="roleKey"      column="role_key"       />
@@ -30,7 +30,7 @@
                  left join sys_dept d on u.dept_id = d.dept_id
     </sql>
 
-    <select id="selectRoleList" parameterType="com.qian.system.domain.SysRole" resultMap="SysRoleResult">
+    <select id="selectRoleList" parameterType="com.qian.system.domain.entity.SysRole" resultMap="SysRoleResult">
         <include refid="selectRoleVo"/>
         where r.del_flag = '0'
         <if test="roleName != null and roleName != ''">
@@ -80,7 +80,7 @@
         where r.role_key=#{roleKey} and r.del_flag = '0' limit 1
     </select>
 
-    <insert id="insertRole" parameterType="com.qian.system.domain.SysRole" useGeneratedKeys="true" keyProperty="roleId">
+    <insert id="insertRole" parameterType="com.qian.system.domain.entity.SysRole" useGeneratedKeys="true" keyProperty="roleId">
         insert into sys_role(
         <if test="roleId != null and roleId != 0">role_id,</if>
         <if test="roleName != null and roleName != ''">role_name,</if>
@@ -108,7 +108,7 @@
         )
     </insert>
 
-    <update id="updateRole" parameterType="com.qian.system.domain.SysRole">
+    <update id="updateRole" parameterType="com.qian.system.domain.entity.SysRole">
         update sys_role
         <set>
             <if test="roleName != null and roleName != ''">role_name = #{roleName},</if>
@@ -125,7 +125,7 @@
         where role_id = #{roleId}
     </update>
 
-    <update id="updateRoleStatus" parameterType="com.qian.system.domain.SysRole">
+    <update id="updateRoleStatus" parameterType="com.qian.system.domain.entity.SysRole">
         update sys_role set status = #{status} where role_id = #{roleId}
     </update>
 
@@ -139,5 +139,15 @@
             #{roleId}
         </foreach>
     </delete>
+
+    <select id="selectRolePermissions" parameterType="Long" resultType="String">
+        select distinct m.perms
+        from sys_menu m
+        left join sys_role_menu rm on m.menu_id = rm.menu_id
+        where rm.role_id = #{roleId}
+        and m.menu_type in ('M', 'C', 'F')
+        and m.status = '0'
+        and m.del_flag = '0'
+    </select>
 
 </mapper>

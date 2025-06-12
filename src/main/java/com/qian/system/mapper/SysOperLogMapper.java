@@ -1,6 +1,6 @@
 package com.qian.system.mapper;
 
-import com.qian.system.domain.SysOperLog;
+import com.qian.system.domain.entity.SysOperLog;
 import java.util.List;
 
 /**

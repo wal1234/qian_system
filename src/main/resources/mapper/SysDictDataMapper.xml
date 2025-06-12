@@ -4,7 +4,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.qian.system.mapper.SysDictDataMapper">
 
-    <resultMap type="com.qian.system.domain.SysDictData" id="SysDictDataResult">
+    <resultMap type="com.qian.system.domain.entity.SysDictData" id="SysDictDataResult">
         <id     property="dictCode"   column="dict_code"   />
         <result property="dictSort"   column="dict_sort"   />
         <result property="dictLabel"  column="dict_label"  />
@@ -26,7 +26,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         from sys_dict_data
     </sql>
 
-    <select id="selectDictDataList" parameterType="SysDictData" resultMap="SysDictDataResult">
+    <select id="selectDictDataList" parameterType="com.qian.system.domain.entity.SysDictData" resultMap="SysDictDataResult">
         <include refid="selectDictDataVo"/>
         <where>
             <if test="dictType != null and dictType != ''">
@@ -72,7 +72,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </foreach>
     </delete>
     
-    <update id="updateDictData" parameterType="SysDictData">
+    <update id="updateDictData" parameterType="com.qian.system.domain.entity.SysDictData">
         update sys_dict_data
         <set>
             <if test="dictSort != null">dict_sort = #{dictSort},</if>
@@ -90,7 +90,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where dict_code = #{dictCode}
     </update>
     
-    <insert id="insertDictData" parameterType="SysDictData">
+    <insert id="insertDictData" parameterType="com.qian.system.domain.entity.SysDictData">
         insert into sys_dict_data(
             <if test="dictSort != null">dict_sort,</if>
             <if test="dictLabel != null and dictLabel != ''">dict_label,</if>

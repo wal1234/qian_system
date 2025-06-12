@@ -1,6 +1,6 @@
 package com.qian.system.service;
 
-import com.qian.system.domain.LoginUser;
+import com.qian.system.domain.entity.LoginUser;
 import jakarta.servlet.http.HttpServletRequest;
 
 /**

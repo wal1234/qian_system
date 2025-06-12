@@ -1,7 +1,7 @@
 package com.qian.system.service;
 
 import java.util.List;
-import com.qian.system.domain.SysDictData;
+import com.qian.system.domain.entity.SysDictData;
 
 /**
  * 字典缓存服务接口

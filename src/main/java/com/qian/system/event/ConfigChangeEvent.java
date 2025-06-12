@@ -1,6 +1,6 @@
 package com.qian.system.event;
 
-import com.qian.system.domain.SysConfig;
+import com.qian.system.domain.entity.SysConfig;
 import lombok.Getter;
 import org.springframework.context.ApplicationEvent;
 

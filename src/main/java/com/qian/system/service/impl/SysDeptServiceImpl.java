@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.qian.system.domain.TreeSelect;
-import com.qian.system.domain.SysDept;
+import com.qian.system.domain.entity.SysDept;
+import com.qian.system.domain.entity.TreeSelect;
 import com.qian.system.mapper.SysDeptMapper;
 import com.qian.system.service.ISysDeptService;
 

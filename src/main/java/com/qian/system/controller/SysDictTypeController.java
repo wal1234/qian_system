@@ -8,8 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import com.qian.common.annotation.Log;
 import com.qian.system.common.core.controller.BaseController;
 import com.qian.common.response.Response;
-import com.qian.system.domain.SysDictType;
-import com.qian.common.enums.system.BusinessType;
+import com.qian.system.domain.entity.SysDictType;
 import com.qian.system.service.ISysDictTypeService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -34,7 +33,7 @@ public class SysDictTypeController extends BaseController {
 
     @Operation(summary = "导出字典类型列表")
     @PreAuthorize("@ss.hasPermi('system:dict:export')")
-    @Log(title = "字典类型", businessType = BusinessType.EXPORT)
+    @Log(title = "字典类型", businessType = "EXPORT")
     @GetMapping("/export")
     public Response<Void> export(SysDictType dictType) {
         List<SysDictType> list = dictTypeService.selectDictTypeList(dictType);
@@ -51,7 +50,7 @@ public class SysDictTypeController extends BaseController {
 
     @Operation(summary = "新增字典类型")
     @PreAuthorize("@ss.hasPermi('system:dict:add')")
-    @Log(title = "字典类型", businessType = BusinessType.INSERT)
+    @Log(title = "字典类型", businessType = "INSERT")
     @PostMapping("/add")
     public Response<Void> add(@Validated @RequestBody SysDictType dict) {
         if ("1".equals(dictTypeService.checkDictTypeUnique(dict))) {
@@ -63,7 +62,7 @@ public class SysDictTypeController extends BaseController {
 
     @Operation(summary = "修改字典类型")
     @PreAuthorize("@ss.hasPermi('system:dict:edit')")
-    @Log(title = "字典类型", businessType = BusinessType.UPDATE)
+    @Log(title = "字典类型", businessType = "UPDATE")
     @PutMapping("/update")
     public Response<Void> edit(@Validated @RequestBody SysDictType dict) {
         if ("1".equals(dictTypeService.checkDictTypeUnique(dict))) {
@@ -75,7 +74,7 @@ public class SysDictTypeController extends BaseController {
 
     @Operation(summary = "删除字典类型")
     @PreAuthorize("@ss.hasPermi('system:dict:remove')")
-    @Log(title = "字典类型", businessType = BusinessType.DELETE)
+    @Log(title = "字典类型", businessType = "DELETE")
     @DeleteMapping("/remove/{dictIds}")
     public Response<Void> remove(@PathVariable Long[] dictIds) {
         return toResponse(dictTypeService.deleteDictTypeByIds(dictIds));
@@ -83,7 +82,7 @@ public class SysDictTypeController extends BaseController {
 
     @Operation(summary = "刷新字典缓存")
     @PreAuthorize("@ss.hasPermi('system:dict:remove')")
-    @Log(title = "字典类型", businessType = BusinessType.CLEAN)
+    @Log(title = "字典类型", businessType = "CLEAN")
     @DeleteMapping("/refreshCache")
     public Response<Void> refreshCache() {
         dictTypeService.clearDictCache();

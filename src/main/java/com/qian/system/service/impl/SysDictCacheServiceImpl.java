@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import com.qian.common.constant.CacheConstants;
-import com.qian.system.domain.SysDictData;
+import com.qian.system.domain.entity.SysDictData;
 import com.qian.system.service.ISysDictCacheService;
 
 /**

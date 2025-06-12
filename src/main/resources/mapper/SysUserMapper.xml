@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.qian.system.mapper.SysUserMapper">
 
-    <resultMap type="com.qian.system.domain.SysUser" id="SysUserResult">
+    <resultMap type="com.qian.system.domain.entity.SysUser" id="SysUserResult">
         <id     property="userId"       column="user_id"      />
         <result property="deptId"       column="dept_id"      />
         <result property="userName"     column="user_name"    />
@@ -25,7 +25,7 @@
         <result property="remark"       column="remark"       />
     </resultMap>
 
-    <resultMap type="com.qian.system.domain.SysUser" id="SysUserInfoResult">
+    <resultMap type="com.qian.system.domain.entity.SysUser" id="SysUserInfoResult">
         <id     property="userId"       column="user_id"      />
         <result property="deptId"       column="dept_id"      />
         <result property="userName"     column="user_name"    />
@@ -51,7 +51,7 @@
         from sys_user u
     </sql>
 
-    <select id="selectUserList" parameterType="com.qian.system.domain.SysUser" resultMap="SysUserResult">
+    <select id="selectUserList" parameterType="com.qian.system.domain.entity.SysUser" resultMap="SysUserResult">
         <include refid="selectUserVo"/>
         where u.del_flag = '0'
         <if test="userName != null and userName != ''">
@@ -96,7 +96,7 @@
         select user_id, email from sys_user where email = #{email} and del_flag = '0' limit 1
     </select>
 
-    <insert id="insertUser" parameterType="com.qian.system.domain.SysUser" useGeneratedKeys="true" keyProperty="userId">
+    <insert id="insertUser" parameterType="com.qian.system.domain.entity.SysUser" useGeneratedKeys="true" keyProperty="userId">
         insert into sys_user(
         <if test="userId != null and userId != 0">user_id,</if>
         <if test="deptId != null and deptId != 0">dept_id,</if>
@@ -128,7 +128,7 @@
         )
     </insert>
 
-    <update id="updateUser" parameterType="com.qian.system.domain.SysUser">
+    <update id="updateUser" parameterType="com.qian.system.domain.entity.SysUser">
         update sys_user
         <set>
             <if test="deptId != null and deptId != 0">dept_id = #{deptId},</if>

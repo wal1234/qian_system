@@ -1,6 +1,6 @@
 package com.qian.system.service;
 
-import com.qian.system.domain.User;
+import com.qian.system.domain.entity.User;
 import java.util.List;
 
 /**

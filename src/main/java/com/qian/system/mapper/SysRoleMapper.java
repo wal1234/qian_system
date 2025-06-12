@@ -1,8 +1,9 @@
 package com.qian.system.mapper;
 
 import java.util.List;
+import java.util.Set;
 import org.apache.ibatis.annotations.Mapper;
-import com.qian.system.domain.SysRole;
+import com.qian.system.domain.entity.SysRole;
 
 /**
  * 角色表 数据层
@@ -96,4 +97,12 @@ public interface SysRoleMapper {
      * @return 角色列表
      */
     public List<SysRole> selectRolesByUserName(String userName);
+
+    /**
+     * 查询角色权限
+     * 
+     * @param roleId 角色ID
+     * @return 权限列表
+     */
+    public Set<String> selectRolePermissions(Long roleId);
 } 

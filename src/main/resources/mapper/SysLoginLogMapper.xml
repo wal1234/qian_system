@@ -4,7 +4,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.qian.system.mapper.SysLoginLogMapper">
 
-    <resultMap type="com.qian.system.domain.SysLoginLog" id="LoginLogResult">
+    <resultMap type="com.qian.system.domain.entity.SysLoginLog" id="LoginLogResult">
         <id     property="infoId"        column="id"           />
         <result property="username"      column="username"     />
         <result property="ipAddress"     column="ip_address"   />
@@ -24,7 +24,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         from sys_login_log
     </sql>
 
-    <insert id="insertLoginLog" parameterType="com.qian.system.domain.SysLoginLog">
+    <insert id="insertLoginLog" parameterType="com.qian.system.domain.entity.SysLoginLog">
         insert into sys_login_log(
             username, ip_address, login_location, browser, os, status, msg, login_time, create_time, update_time, del_flag
         )values(
@@ -32,7 +32,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         )
     </insert>
 
-    <select id="selectLoginLogList" parameterType="com.qian.system.domain.SysLoginLog" resultMap="LoginLogResult">
+    <select id="selectLoginLogList" parameterType="com.qian.system.domain.entity.SysLoginLog" resultMap="LoginLogResult">
         <include refid="selectLoginLogVo"/>
         <where>
             <if test="username != null and username != ''">

@@ -1,6 +1,6 @@
 package com.qian.system.mapper;
 
-import com.qian.system.domain.User;
+import com.qian.system.domain.entity.User;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 

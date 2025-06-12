@@ -1,7 +1,7 @@
 package com.qian.system.service;
 
 import java.util.List;
-import com.qian.system.domain.SysDictType;
+import com.qian.system.domain.entity.SysDictType;
 
 /**
  * 字典 业务层

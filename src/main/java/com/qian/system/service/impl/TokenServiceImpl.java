@@ -10,7 +10,7 @@ import com.qian.common.utils.StringUtils;
 import com.qian.common.utils.ip.AddressUtils;
 import com.qian.common.utils.ip.IpUtils;
 import com.qian.common.utils.uuid.IdUtils;
-import com.qian.system.domain.LoginUser;
+import com.qian.system.domain.entity.LoginUser;
 import com.qian.system.service.TokenService;
 import eu.bitwalker.useragentutils.UserAgent;
 import org.springframework.data.redis.core.RedisTemplate;

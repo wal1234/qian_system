@@ -1,6 +1,7 @@
 package com.qian.system.mapper;
 
-import com.qian.system.domain.SysConfig;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.qian.system.domain.entity.SysConfig;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.ResultMap;
@@ -18,7 +19,7 @@ import java.util.List;
  * MyBatis配置: mybatis-config.xml和mybatis-mapping-config.xml
  */
 @Mapper
-public interface SysConfigMapper {
+public interface SysConfigMapper extends BaseMapper<SysConfig> {
     /**
      * 查询参数配置列表
      *

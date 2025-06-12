@@ -1,111 +1,100 @@
 package com.qian.system.controller;
 
-import com.qian.system.common.Result;
-import com.qian.system.domain.User;
-import com.qian.system.service.IUserService;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
+import com.qian.common.response.Response;
+import com.qian.system.domain.entity.User;
+import com.qian.system.service.IUserService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.extern.slf4j.Slf4j;
+import com.qian.common.utils.SecurityUtils;
 
 /**
  * 用户信息
  */
+@Slf4j
+@Tag(name = "用户管理", description = "用户管理相关接口")
 @RestController
 @RequestMapping("/system/user2")
 public class UserController {
-    
     @Autowired
     private IUserService userService;
-    
-    /**
-     * 获取用户列表
-     */
+
+    @Operation(summary = "获取用户列表")
     @GetMapping("/list")
-    public Result<List<User>> list(User user) {
+    public Response<List<User>> list(User user) {
         List<User> list = userService.selectUserList(user);
-        return Result.success(list);
+        return Response.success(list);
     }
-    
-    /**
-     * 根据用户编号获取详细信息
-     */
+
+    @Operation(summary = "根据用户编号获取详细信息")
     @GetMapping("/{id}")
-    public Result<User> getInfo(@PathVariable Long id) {
-        return Result.success(userService.selectUserById(id));
+    public Response<User> getInfo(@Parameter(description = "用户ID") @PathVariable Long id) {
+        return Response.success(userService.selectUserById(id));
     }
-    
-    /**
-     * 新增用户
-     */
+
+    @Operation(summary = "新增用户")
     @PostMapping
-    public Result<Void> add(@RequestBody User user) {
+    public Response<Void> add(@RequestBody User user) {
         if (!userService.checkUserNameUnique(user)) {
-            return Result.error("新增用户'" + user.getUsername() + "'失败，登录账号已存在");
+            return Response.error("新增用户'" + user.getUsername() + "'失败，登录账号已存在");
         } else if (!userService.checkPhoneUnique(user)) {
-            return Result.error("新增用户'" + user.getUsername() + "'失败，手机号码已存在");
+            return Response.error("新增用户'" + user.getUsername() + "'失败，手机号码已存在");
         } else if (!userService.checkEmailUnique(user)) {
-            return Result.error("新增用户'" + user.getUsername() + "'失败，邮箱账号已存在");
+            return Response.error("新增用户'" + user.getUsername() + "'失败，邮箱账号已存在");
         }
-        return toResult(userService.insertUser(user));
+        user.setCreateBy(SecurityUtils.getUsername());
+        return toResponse(userService.insertUser(user));
     }
-    
-    /**
-     * 修改用户
-     */
+
+    @Operation(summary = "修改用户")
     @PutMapping
-    public Result<Void> edit(@RequestBody User user) {
+    public Response<Void> edit(@RequestBody User user) {
         if (!userService.checkUserNameUnique(user)) {
-            return Result.error("修改用户'" + user.getUsername() + "'失败，登录账号已存在");
+            return Response.error("修改用户'" + user.getUsername() + "'失败，登录账号已存在");
         } else if (!userService.checkPhoneUnique(user)) {
-            return Result.error("修改用户'" + user.getUsername() + "'失败，手机号码已存在");
+            return Response.error("修改用户'" + user.getUsername() + "'失败，手机号码已存在");
         } else if (!userService.checkEmailUnique(user)) {
-            return Result.error("修改用户'" + user.getUsername() + "'失败，邮箱账号已存在");
+            return Response.error("修改用户'" + user.getUsername() + "'失败，邮箱账号已存在");
         }
-        return toResult(userService.updateUser(user));
+        user.setUpdateBy(SecurityUtils.getUsername());
+        return toResponse(userService.updateUser(user));
     }
-    
-    /**
-     * 删除用户
-     */
+
+    @Operation(summary = "删除用户")
     @DeleteMapping("/{ids}")
-    public Result<Void> remove(@PathVariable Long[] ids) {
+    public Response<Void> remove(@Parameter(description = "用户ID串") @PathVariable Long[] ids) {
         if (userService.hasAdminUser(ids)) {
-            return Result.error("不允许删除超级管理员用户");
+            return Response.error("不允许删除超级管理员用户");
         }
-        return toResult(userService.deleteUserByIds(ids));
+        return toResponse(userService.deleteUserByIds(ids));
     }
-    
-    /**
-     * 重置密码
-     */
+
+    @Operation(summary = "重置密码")
     @PutMapping("/resetPwd")
-    public Result<Void> resetPwd(@RequestBody User user) {
-        return toResult(userService.resetPwd(user));
+    public Response<Void> resetPwd(@RequestBody User user) {
+        return toResponse(userService.resetPwd(user));
     }
 
-    /**
-     * 状态修改
-     */
+    @Operation(summary = "状态修改")
     @PutMapping("/changeStatus")
-    public Result<Void> changeStatus(@RequestBody User user) {
-        return toResult(userService.updateUserStatus(user));
+    public Response<Void> changeStatus(@RequestBody User user) {
+        return toResponse(userService.updateUserStatus(user));
     }
 
-    /**
-     * 更新用户头像
-     */
+    @Operation(summary = "更新用户头像")
     @PutMapping("/updateAvatar")
-    public Result<Void> updateAvatar(@RequestBody User user) {
-        return toResult(userService.updateUser(user));
+    public Response<Void> updateAvatar(@RequestBody User user) {
+        return toResponse(userService.updateUser(user));
     }
 
-    /**
-     * 更新用户个人信息
-     */
+    @Operation(summary = "更新用户个人信息")
     @PutMapping("/updateProfile")
-    public Result<Void> updateProfile(@RequestBody User user) {
-        return toResult(userService.updateUser(user));
+    public Response<Void> updateProfile(@RequestBody User user) {
+        return toResponse(userService.updateUser(user));
     }
 
     /**
@@ -114,7 +103,7 @@ public class UserController {
      * @param rows 影响行数
      * @return 操作结果
      */
-    private Result<Void> toResult(int rows) {
-        return rows > 0 ? Result.success() : Result.error("操作失败");
+    private Response<Void> toResponse(int rows) {
+        return rows > 0 ? Response.success() : Response.error("操作失败");
     }
 } 

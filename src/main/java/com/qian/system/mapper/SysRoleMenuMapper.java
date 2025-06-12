@@ -3,7 +3,7 @@ package com.qian.system.mapper;
 import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
-import com.qian.system.domain.SysRoleMenu;
+import com.qian.system.domain.entity.SysRoleMenu;
 
 /**
  * 角色与菜单关联表 数据层

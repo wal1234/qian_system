@@ -1,7 +1,7 @@
 package com.qian.system.mapper;
 
-import com.qian.system.domain.SysLoginLog;
 import java.util.List;
+import com.qian.system.domain.entity.SysLoginLog;
 
 /**
  * 系统访问日志情况信息 数据层
@@ -18,7 +18,7 @@ public interface SysLoginLogMapper {
      * 查询系统登录日志集合
      * 
      * @param loginLog 访问日志对象
-     * @return 记录集合
+     * @return 登录记录集合
      */
     public List<SysLoginLog> selectLoginLogList(SysLoginLog loginLog);
 

@@ -11,6 +11,8 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.context.annotation.ComponentScan.Filter;
 import org.springframework.core.env.Environment;
+import io.swagger.v3.oas.annotations.OpenAPIDefinition;
+import io.swagger.v3.oas.annotations.info.Info;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -20,12 +22,18 @@ import java.net.UnknownHostException;
  */
 @SpringBootApplication
 @EnableDiscoveryClient
+@OpenAPIDefinition(
+    info = @Info(
+        title = "千博客系统接口文档",
+        version = "1.0.0",
+        description = "千博客系统接口文档"
+    )
+)
 @ComponentScan(
-    basePackages = {"com.qian.system", "com.qian"},
-    nameGenerator = org.springframework.context.annotation.AnnotationBeanNameGenerator.class,
+    basePackages = {"com.qian.system", "com.qian.common"},
     excludeFilters = {
         @Filter(type = FilterType.REGEX, pattern = "com.qian.common.feign.FeignConfig"),
-        @Filter(type = FilterType.REGEX, pattern = ".*GlobalExceptionHandler") // 避免全局异常处理冲突
+        @Filter(type = FilterType.REGEX, pattern = ".*GlobalExceptionHandler")
     }
 )
 public class QianSystemApplication extends SpringBootServletInitializer {
@@ -62,35 +70,28 @@ public class QianSystemApplication extends SpringBootServletInitializer {
      */
     private static void printStartupInfo(ConfigurableApplicationContext context, long startTime) {
         Environment env = context.getEnvironment();
-        String serverPort = env.getProperty("server.port", "8080");
-        String contextPath = env.getProperty("server.servlet.context-path", "/");
-        if (!contextPath.startsWith("/")) {
-            contextPath = "/" + contextPath;
-        }
-        
-        String hostAddress = "localhost";
+        String ip = "localhost";
         try {
-            hostAddress = InetAddress.getLocalHost().getHostAddress();
+            ip = InetAddress.getLocalHost().getHostAddress();
         } catch (UnknownHostException e) {
-            log.warn("无法确定主机地址", e);
+            log.warn("获取本机IP地址失败", e);
         }
         
-        String activeProfile = env.getProperty("spring.profiles.active", "dev");
+        String port = env.getProperty("server.port", "8080");
+        String contextPath = env.getProperty("server.servlet.context-path", "");
+        String activeProfile = env.getProperty("spring.profiles.active", "default");
         
         log.info("\n----------------------------------------------------------\n" +
-                "应用 '{}' 启动成功! 耗时: {}ms\n" +
-                "访问URL:\n" +
-                "本地: \thttp://localhost:{}{}\n" +
-                "远程: \thttp://{}:{}{}\n" +
-                "文档: \thttp://{}:{}{}/swagger-ui.html\n" +
-                "配置: \t{}\n" +
+                "应用 '{}' 启动成功! 访问URL:\n" +
+                "本地: \t\thttp://localhost:{}{}\n" +
+                "外部: \t\thttp://{}:{}{}\n" +
+                "环境: \t\t{}\n" +
+                "启动耗时: \t{}ms\n" +
                 "----------------------------------------------------------",
                 env.getProperty("spring.application.name"),
-                (System.currentTimeMillis() - startTime),
-                serverPort, contextPath,
-                hostAddress, serverPort, contextPath,
-                hostAddress, serverPort, contextPath,
-                activeProfile
-        );
+                port, contextPath,
+                ip, port, contextPath,
+                activeProfile,
+                System.currentTimeMillis() - startTime);
     }
 } 

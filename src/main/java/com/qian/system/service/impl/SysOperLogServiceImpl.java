@@ -1,6 +1,6 @@
 package com.qian.system.service.impl;
 
-import com.qian.system.domain.SysOperLog;
+import com.qian.system.domain.entity.SysOperLog;
 import com.qian.system.mapper.SysOperLogMapper;
 import com.qian.system.service.ISysOperLogService;
 import lombok.extern.slf4j.Slf4j;

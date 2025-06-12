@@ -3,13 +3,14 @@ package com.qian.system.mapper;
 import java.util.List;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Mapper;
-import com.qian.system.domain.SysMenu;
+import com.qian.system.domain.entity.SysMenu;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 /**
- * 菜单表 数据层
+ * 菜单权限表 数据层
  */
 @Mapper
-public interface SysMenuMapper {
+public interface SysMenuMapper extends BaseMapper<SysMenu> {
     /**
      * 查询系统菜单列表
      * 
@@ -112,4 +113,12 @@ public interface SysMenuMapper {
      * @return 结果
      */
     public SysMenu checkMenuNameUnique(@Param("menuName") String menuName, @Param("parentId") Long parentId);
+
+    /**
+     * 查询菜单使用数量
+     * 
+     * @param menuId 菜单ID
+     * @return 结果
+     */
+    int checkMenuExistRole(Long menuId);
 } 

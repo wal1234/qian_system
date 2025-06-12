@@ -1,7 +1,7 @@
 package com.qian.system.event;
 
-import com.qian.system.domain.SysLoginLog;
-import com.qian.system.domain.SysOperLog;
+import com.qian.system.domain.entity.SysLoginLog;
+import com.qian.system.domain.entity.SysOperLog;
 import com.qian.system.service.ISysLoginLogService;
 import com.qian.system.service.ISysOperLogService;
 import lombok.extern.slf4j.Slf4j;

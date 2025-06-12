@@ -1,8 +1,9 @@
 package com.qian.system.service;
 
 import java.util.List;
+import java.util.Set;
 
-import com.qian.system.domain.SysRole;
+import com.qian.system.domain.entity.SysRole;
 
 /**
  * 角色业务层
@@ -132,4 +133,40 @@ public interface ISysRoleService {
      * @return 角色列表
      */
     public List<SysRole> selectRoleAll();
+
+    /**
+     * 查询角色权限
+     * 
+     * @param roleId 角色ID
+     * @return 权限列表
+     */
+    public Set<String> selectRolePermissions(Long roleId);
+
+    /**
+     * 批量修改角色状态
+     * 
+     * @param roleIds 角色ID数组
+     * @param status 角色状态
+     * @return 结果
+     */
+    public int updateRoleStatusBatch(Long[] roleIds, String status);
+
+    /**
+     * 批量修改角色数据权限
+     * 
+     * @param roleIds 角色ID数组
+     * @param dataScope 数据权限
+     * @return 结果
+     */
+    public int updateRoleDataScopeBatch(Long[] roleIds, String dataScope);
+
+    /**
+     * 导入角色数据
+     * 
+     * @param roleList 角色数据列表
+     * @param updateSupport 是否支持更新
+     * @param operName 操作用户
+     * @return 结果
+     */
+    public String importRole(List<SysRole> roleList, Boolean updateSupport, String operName);
 } 
